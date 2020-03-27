@@ -1,44 +1,81 @@
 import React from 'react';
-import { Formik, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+
+const RegisterSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email address format")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(3, "Password must be 3 characters at minimum")
+    .required("Password is required")
+});
 
 const RegisterForm = () => {
   return (
-    <Formik 
-      initialValues={{ firstName: '', lastName: '', email: '' }}
-      validationSchema={Yup.object({
-        firstName: Yup.string()
-          .max(15, 'Must be 15 characters or less')
-          .required('Required'),
-        lastName: Yup.string()
-          .max(20, 'Must be 20 characters or less')
-          .required('Required'),
-        email: Yup.string()
-          .email('Invalid email address')
-          .required('Required'),
-      })}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
-      }}
-    > 
-      {formik => (
-        <form onSubmit={formik.handleSubmit}>
-          <label htmlFor="firstName">First Name</label>
-          <Field name="firstName" type="text" className="form-input" placeholder="Jane" />
-          <ErrorMessage name="firstName" />
-          <label htmlFor="lastName">Last Name</label>
-          <Field name="lastName" type="text" />
-          <ErrorMessage name="lastName" />
-          <label htmlFor="email">Email Address</label>
-          <Field name="email" type="email" />
-          <ErrorMessage name="email" />
-          <button type="submit">Submit</button>
-        </form>
-      )}
-    </Formik>
+    <div className="container">
+      <div className="row mb-5">
+        <div className="col-lg-12 text-center">
+          <h1 className="mt-5">Register Form</h1>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-lg-12">
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={RegisterSchema}
+            onSubmit={({ setSubmitting }) => {
+              alert("Form is validated! Submitting the form...");
+              setSubmitting(false);
+            }}
+          >
+          {({ touched, errors, isSubmitting }) => (
+            <Form>
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <Field
+                  type="email"
+                  name="email"
+                  placeholder="Enter email"
+                  className={`form-control ${
+                    touched.email && errors.email ? "is-invalid" : ""
+                  }`}
+                />
+                <ErrorMessage
+                  component="div"
+                  name="email"
+                  className="invalid-feedback"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <Field
+                  type="password"
+                  name="password"
+                  placeholder="Enter password"
+                  className={`form-control ${
+                    touched.password && errors.password ? "is-invalid" : ""
+                  }`}
+                />
+                <ErrorMessage
+                  component="div"
+                  name="password"
+                  className="invalid-feedback"
+                />
+              </div>
+              <button
+                type="submit"
+                className="btn btn-primary btn-block"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Please wait..." : "Submit"}
+              </button>
+            </Form>
+          )}           
+          </Formik>
+        </div>
+      </div>
+    </div>
   );
 };
 
