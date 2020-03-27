@@ -18,6 +18,12 @@ const Header = () => (
     <Link href="/register">
       <a style={linkStyle}>Register</a>
     </Link>
+    <Link href="/login">
+      <a style={linkStyle}>Login</a>
+    </Link>
+    <Link href="/profile">
+      <a style={linkStyle}>Profile</a>
+    </Link>
   </div>
 );
 
