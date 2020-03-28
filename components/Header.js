@@ -24,6 +24,9 @@ const Header = () => (
     <Link href="/profile">
       <a style={linkStyle}>Profile</a>
     </Link>
+    <Link href="/invoice">
+      <a style={linkStyle}>Invoice</a>
+    </Link>
   </div>
 );
 
