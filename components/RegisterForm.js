@@ -2,8 +2,6 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-const apiUrl = 'https://localhost:8000/register'
-
 const RegisterSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address format")
@@ -17,7 +15,7 @@ const Register = ({ _username, _password }) =>
   new Promise((resolve, reject) => {
     setTimeout(() => {
       try {
-        fetch(apiUrl, {
+        fetch(process.env.RESTURL + '/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ _username, _password }, null, 2),
