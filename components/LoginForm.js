@@ -2,7 +2,7 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Cookies } from 'react-cookie';
-import { login } from '../utils/auth'
+import axios from 'axios';
 import Router from 'next/router'
 
 const cookies = new Cookies();
@@ -15,34 +15,6 @@ const LoginSchema = Yup.object().shape({
         .min(3, "Password must be 3 characters at minimum")
         .required("Password is required")
 });
-
-const Login = ({ username, password }) =>
-    new Promise((resolve, reject) => {
-        setTimeout(() => {
-            try {
-                fetch(process.env.RESTURL + '/login_check', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password }, null, 2)
-                })
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        reject(new Error('Login failed.'));
-                    }
-                })
-                .then((data) => {
-                    const { token } = data;
-                    cookies.set('token', token);
-                    Router.push('/profile')
-                });
-            } catch (error) {
-                reject(new Error('You have an error in your code or there are Network issues.'));
-            }
-            resolve(true);
-        }, 1000);
-    });
 
 class LoginForm extends React.Component  {
     constructor(props) {
@@ -65,11 +37,23 @@ class LoginForm extends React.Component  {
                             initialValues={{ email: "", password: "" }}
                             validationSchema={LoginSchema}
                             onSubmit={(values, { setSubmitting, setFieldError }) => {
-                                Login({ username: values.email, password: values.password })
-                                    .catch(error => {
-                                        setFieldError('general', error.message);
+                                axios
+                                    .post(process.env.RESTURL + '/login_check', {
+                                        username: values.email,
+                                        password: values.password
                                     })
-                                    .finally(() => {
+                                    .then(response => {
+                                        const { token } = response.data;
+                                        cookies.set('token', token);
+                                        Router.push('/profile')
+                                    }).catch(error => {
+                                        if (error.response.data.message) {
+                                            //this.error = error.response.data.error;
+                                            setFieldError('general', error.response.data.message);
+                                        } else {
+                                            setFieldError('general', 'Unknown error');
+                                        }
+                                    }).finally(() => {
                                         setSubmitting(false);
                                     });
                             }}
