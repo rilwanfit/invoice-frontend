@@ -8,7 +8,9 @@ const RegisterSchema = Yup.object().shape({
     .required("Email is required"),
   password: Yup.string()
     .min(3, "Password must be 3 characters at minimum")
-    .required("Password is required")
+    .required("Password is required"),
+  name: Yup.string()
+    .required("Naam is verplicht")
 });
 
 const Register = ({ _username, _password }) =>
@@ -47,7 +49,7 @@ const RegisterForm = () => {
       <div className="row">
         <div className="col-lg-12">
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{ email: "", password: "",naam:""}}
             validationSchema={RegisterSchema}
             onSubmit={(values, { setSubmitting, setFieldError }) => {
               Register({ _username: values.email, _password: values.password })
@@ -66,11 +68,43 @@ const RegisterForm = () => {
             {({ touched, errors, isSubmitting }) => (
               <Form>
                 <div className="form-group">
-                  <label htmlFor="email">Email</label>
+                  {/* <label htmlFor="Naam">naam</label> */}
+                  <Field
+                    type="text"
+                    name="name"
+                    placeholder="Naam"
+                    className={`form-control ${
+                      touched.naam && errors.naam ? "is-invalid" : ""
+                      }`}
+                  />
+                  <ErrorMessage
+                    component="div"
+                    name="name"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  {/* <label htmlFor="Naam">bedrijfsNaam</label> */}
+                  <Field
+                    type="bedrijfsNaam"
+                    name="bedrijfsNaam"
+                    placeholder="Bedrijfsnaam"
+                    className={`form-control ${
+                      touched.bedrijfsNaam && errors.bedrijfsNaam ? "is-invalid" : ""
+                      }`}
+                  />
+                  <ErrorMessage
+                    component="div"
+                    name="bedrijfsNaam"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  {/* <label htmlFor="email">Email</label> */}
                   <Field
                     type="email"
                     name="email"
-                    placeholder="Enter email"
+                    placeholder="E-mailadres"
                     className={`form-control ${
                       touched.email && errors.email ? "is-invalid" : ""
                       }`}
@@ -82,11 +116,11 @@ const RegisterForm = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="password">Password</label>
+                  {/* <label htmlFor="password">Password</label> */}
                   <Field
                     type="password"
                     name="password"
-                    placeholder="Enter password"
+                    placeholder="Wachtwoord"
                     className={`form-control ${
                       touched.password && errors.password ? "is-invalid" : ""
                       }`}
@@ -97,12 +131,43 @@ const RegisterForm = () => {
                     className="invalid-feedback"
                   />
                 </div>
+                <div className="form-group" >                
+                    <Field as="select" name="color"
+                    className={`form-control Test ${
+                      touched.password && errors.password ? "is-invalid" : ""
+                      }`}>
+                    <option selected disabled hidden>Hoe heb je ons gevonden?</option>
+                    <optgroup label="Aanbevolen door">
+                      <option value="Network">Mijn netwerk</option>
+                      <option>Mijn adviseur</option>
+                      <option>Relish</option>
+                    </optgroup>
+                    <optgroup label="Social Media">
+                      <option>Facebook</option>
+                      <option>LinkedIn</option>
+                      <option>Twitter</option>
+                      <option>Instagram</option>
+                    </optgroup>
+                    <optgroup label="Overig">
+                      <option>Gevonden via zoekopdracht</option>
+                      <option>Kamer van Koophandel</option>
+                      <option>Andere bron</option>
+                    </optgroup>
+
+                  </Field>
+                  <ErrorMessage
+                    component="div"
+                    name="password"
+                    className="invalid-feedback"
+                  />
+                  
+                </div>
                 <button
                   type="submit"
                   className="btn btn-primary btn-block"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Please wait..." : "Submit"}
+                  {isSubmitting ? "Please wait..." : "Gratis Aanmelden"}
                 </button>
                 <div style={{ color: 'red' }}>{errors.general}</div>
               </Form>
