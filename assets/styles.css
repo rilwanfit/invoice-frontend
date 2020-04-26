@@ -5,3 +5,14 @@ body {
     max-width: 680px;
     margin: 0 auto;
   }
+
+  .btn-primary {
+    background-color: #537895;
+    background-image: linear-gradient(315deg, #537895 0%, #09203f 74%);
+
+  }
+  
+.Test{
+  background-color:#f9f5f6;
+ 
+}
