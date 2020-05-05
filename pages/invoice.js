@@ -1,10 +1,10 @@
+import Invoice from '../components/Invoice';
 import Layout from '../components/Layout';
-import InvoiceForm from '../components/InvoiceForm';
 
-export default function Invoice() {
+export default function InvoicePage() {
     return (
         <Layout>
-            <InvoiceForm/>
+            <Invoice/>
         </Layout>
     );
   }
