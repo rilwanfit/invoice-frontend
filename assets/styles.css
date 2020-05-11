@@ -1,6 +1,5 @@
 body {
-    font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica',
-      'Arial', sans-serif;
+  font-family: HelveticaNeue-LightItalic;
     padding: 20px 20px 60px;
     max-width: 1920px;
     margin: 0 auto;
@@ -8,12 +7,28 @@ body {
   }
 
   .btn-primary {
-    background-color: #537895;
-    background-image: linear-gradient(315deg, #537895 0%, #09203f 74%);
+    background-color: #abe9cd;
+    background-image: linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%);
+    border-color: #343a4000;
+
 
   }
-  
-.Test{
-  background-color:#f9f5f6;
- 
+
+  hr.style15 {
+    border-top: 4px double #8c8b8b;
+    text-align: center;
+  }
+
+
+
+.form-control{
+  color:rgba(228, 24, 24, 0);
+  background-color: rgba(228, 24, 24, 0);
+  background-clip: padding-box;
+  border: 1px solid rgba(228, 24, 24, 0);
+}
+#under{
+  background: radial-gradient(circle farthest-corner at center center, #333333 10%, #000000);
+    color: #fff;
+
 }
