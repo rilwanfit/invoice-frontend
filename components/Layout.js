@@ -9,10 +9,12 @@ const layoutStyle = {
 
 const Layout = props => (
   <Fragment>
-  <Header />
-  <div className="container mt-5">
-    {props.children}
-  </div>
+    <Header />
+    <div className="container mt-5">
+      <div className="container-fluid pt-2 pb-2 pt-md-4 px-md-5 shadow">
+        {props.children}
+      </div>
+    </div>
   </Fragment>
 );
 

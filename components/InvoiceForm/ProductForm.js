@@ -180,10 +180,10 @@ const ProductForm = () => {
                                             <td colSpan={5}>
                                                 <button
                                                     type="button"
-                                                    className="secondary"
+                                                    className="btn btn-primary mb-2"
                                                     onClick={() => push({ name: "" })}
                                                 >
-                                                    <AddIcon size="1.25em" color="green" /> Add Product
+                                                    <AddIcon size="1.25em" color="white" /> Add Product
                 </button>
                                             </td>
                                         </tr>
