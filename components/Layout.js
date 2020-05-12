@@ -1,4 +1,5 @@
 import Header from './Header';
+import { Fragment } from 'react';
 
 const layoutStyle = {
   margin: 20,
@@ -7,10 +8,12 @@ const layoutStyle = {
 };
 
 const Layout = props => (
-  <div className="container">
-    <Header />
+  <Fragment>
+  <Header />
+  <div className="container mt-5">
     {props.children}
   </div>
+  </Fragment>
 );
 
 export default Layout;
