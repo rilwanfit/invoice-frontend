@@ -22,13 +22,40 @@ body {
 
 
 .form-control{
-  color:rgba(228, 24, 24, 0);
+  /* color:rgba(228, 24, 24, 0); */
   background-color: rgba(228, 24, 24, 0);
   background-clip: padding-box;
   border: 1px solid rgba(228, 24, 24, 0);
 }
-#under{
+
+.invoice-top {
   background: radial-gradient(circle farthest-corner at center center, #333333 10%, #000000);
     color: #fff;
 
+}
+
+.spacer {
+  height: 15px;
+  display: block;
+}
+.clearfix {
+  clear: both;
+  display: block;
+}
+.company-info {
+  text-align: right
+}
+.company-name {
+  color: #F8ED31;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.company-info div {
+  font-size: 12px;
+  float: right;
+  margin: 0 3px 3px 0;
+}
+.invoice-info {
+  margin: 20px auto;
 }
