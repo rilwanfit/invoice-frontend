@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
@@ -103,7 +103,10 @@ const InvoiceList = () => {
     ]
 
     return (
-        <BootstrapTable keyField='id' data={data} columns={columns} pagination={paginationFactory()} />
+        <Fragment>
+            <a className="btn btn-primary float-right mb-2" href="/create-invoice" role="button">+ Create invoice</a>
+            <BootstrapTable keyField='id' data={data} columns={columns} pagination={paginationFactory()} />
+        </Fragment>
     )
 
 }

@@ -1,0 +1,43 @@
+{
+    "form": {
+        "name": "Invoice",
+        "fieldgroups": [
+            "Company",
+            "Customer",
+            "Products",
+            "Extras"
+        ],
+        "fields": [
+            {
+                "name": "company_name",
+                "label": "Company Name",
+                "group": "Company"
+            },
+            {
+                "name": "street_name",
+                "label": "Street Name",
+                "group": "Company"
+            },
+            {
+                "name": "postalAddress",
+                "label": "Postal address",
+                "group": "Company"
+            },
+            {
+                "name": "website",
+                "label": "Website Name",
+                "group": "Company"
+            },
+            {
+                "name": "email",
+                "label": "Email",
+                "group": "Company"
+            },
+            {
+                "name": "phone",
+                "label": "Phone",
+                "group": "Company"
+            }
+        ]
+    }
+}
