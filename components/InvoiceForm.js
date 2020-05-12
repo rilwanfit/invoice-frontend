@@ -50,11 +50,6 @@ const Invoice = ({ _username, _password }) =>
 const InvoiceForm = () => {
     return (
         <div className="container">
-            <div className="row mb-5">
-                <div className="col-lg-12 text-center">
-                    <h1 className="mt-5">Invoice</h1>
-                </div>
-            </div>
             <div className="row">
                 <div className="col-lg-12">
                 <a className="btn btn-primary float-right mb-2" href="/create-invoice" role="button">+ Save invoice</a>

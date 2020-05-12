@@ -33,6 +33,7 @@ class LoginForm extends React.Component  {
                 </div>
                 <div className="row">
                     <div className="col-lg-12">
+                    <div className="container-fluid pt-2 pb-2 pt-md-4 px-md-5 ">
                         <Formik
                             initialValues={{ email: "", password: "" }}
                             validationSchema={LoginSchema}
@@ -103,6 +104,7 @@ class LoginForm extends React.Component  {
                                 </Form>
                             )}
                         </Formik>
+                        </div>
                     </div>
                 </div>
             </div>
