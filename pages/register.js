@@ -5,7 +5,12 @@ import Layout from '../components/Layout';
 export default function Register() {
     return (
         <Layout>
-            <RegisterForm />
+            <div className="container">
+                <h1 className="mt-1">Register Form</h1>
+                <div className="row">
+                    <RegisterForm />
+                </div>
+            </div>
         </Layout>
     );
-  }
+}
