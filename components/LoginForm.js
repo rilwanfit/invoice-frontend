@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Cookies } from 'react-cookie';
 import axios from 'axios';
 import Router from 'next/router'
+
+import { ApplicationContext } from './ApplicationContext'
 
 const cookies = new Cookies();
 
@@ -16,23 +18,21 @@ const LoginSchema = Yup.object().shape({
         .required("Password is required")
 });
 
-class LoginForm extends React.Component  {
-    constructor(props) {
-        super(props);
-        this.state = {
-          token: cookies.get('token') || null
-        }
-      }
-    render() {
-        return (
-            <div className="container">
-                <div className="row mb-5">
-                    <div className="col-lg-12 text-center">
-                        <h1 className="mt-5">Login Form</h1>
-                    </div>
+const LoginForm = () => {
+
+    const {
+        login
+    } = useContext(ApplicationContext)
+
+    return (
+        <div className="container">
+            <div className="row mb-5">
+                <div className="col-lg-12 text-center">
+                    <h1 className="mt-5">Login Form</h1>
                 </div>
-                <div className="row">
-                    <div className="col-lg-12">
+            </div>
+            <div className="row">
+                <div className="col-lg-12">
                     <div className="container-fluid pt-2 pb-2 pt-md-4 px-md-5 ">
                         <Formik
                             initialValues={{ email: "", password: "" }}
@@ -46,8 +46,11 @@ class LoginForm extends React.Component  {
                                     .then(response => {
                                         const { token } = response.data;
                                         cookies.set('token', token);
-                                        Router.push('/profile')
+                                        login()
+                                        Router.push('/dashboard')
                                     }).catch(error => {
+                                        console.log(error);
+                                        
                                         if (error.response.data.message) {
                                             //this.error = error.response.data.error;
                                             setFieldError('general', error.response.data.message);
@@ -104,12 +107,11 @@ class LoginForm extends React.Component  {
                                 </Form>
                             )}
                         </Formik>
-                        </div>
                     </div>
                 </div>
             </div>
-        );
-    }
-};
+        </div>
+    );
+}
 
 export default LoginForm;

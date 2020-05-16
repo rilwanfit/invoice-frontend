@@ -2,33 +2,55 @@ import Link from './Link';
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
-import { Fragment } from 'react';
+import { Fragment, useContext } from 'react';
 
-const authorized = false
+import { ApplicationContext } from './ApplicationContext'
 
-const Header = () => (
-    <Navbar className="header" collapseOnSelect expand="lg" bg="dark" variant="dark">
-        <Navbar.Brand href="#home">Company Logo</Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="mr-auto">
-                <Link href="/about">
-                    <a className="nav-link">About</a>
-                </Link>
-                <Link href="/blog">
-                    <a className="nav-link">Blog</a>
-                </Link>
+const Header = () => {
+    const {
+        authenticated
+    } = useContext(ApplicationContext)
 
-                <Link href="/profile">
-                    <a className="nav-link">Profile</a>
-                </Link>
-                <Link href="/invoice">
-                    <a className="nav-link">Invoice</a>
-                </Link>
-            </Nav>
-            <Nav>
-                {authorized ? (
+    return (
+        <Navbar className="header" collapseOnSelect expand="lg" bg="dark" variant="dark">
+            <Navbar.Brand href="#home">Company Logo</Navbar.Brand>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+                {authenticated ? (
                     <Nav className="mr-auto">
+                        <Link href="/dashboard">
+                            <a className="nav-link">Dashboard</a>
+                        </Link>
+                        <Link href="/invoice">
+                            <a className="nav-link">Verzonden</a>
+                        </Link>
+                        <Link href="/invoice-type-2">
+                            <a className="nav-link">Ontvangen facturen</a>
+                        </Link>
+                        <Link href="/product">
+                            <a className="nav-link">Product</a>
+                        </Link>
+
+                        <Link href="/category">
+                            <a className="nav-link">Category</a>
+                        </Link>
+                        <Link href="/settings">
+                            <a className="nav-link">Instellingen</a>
+                        </Link>
+                    </Nav>
+                ) : (
+                        <Nav className="mr-auto">
+                            <Link href="/register">
+                                <a className="nav-link">Register</a>
+                            </Link>
+                            <Link href="/">
+                                <a className="nav-link">Login</a>
+                            </Link>
+                        </Nav>
+                    )}
+                <Nav>
+                    {authenticated ? (
+                        <Nav className="mr-auto">
                         <NavDropdown title={
                             <>
 
@@ -40,32 +62,23 @@ const Header = () => (
 
 
                                 <i className="fas fa-users fa-sm fa-fw mr-2 text-gray-400" /> Profile
-                        </NavDropdown.Item>
+                    </NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.2">
                                 <i className="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400" />
-           Settings
-         </NavDropdown.Item>
+       Settings
+     </NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">
+                            <NavDropdown.Item href="/logout">
                                 <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400" />
-           Logout
-         </NavDropdown.Item>
+       Logout
+     </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
-                ) : (
-                        <Fragment>
-                            <Link href="/register">
-                                <a className="nav-link">Register</a>
-                            </Link>
-                            <Link href="/login">
-                                <a className="nav-link">Login</a>
-                            </Link>
-                        </Fragment>
-                    )}
-
-            </Nav>
-        </Navbar.Collapse>
-    </Navbar>
-);
+                    ) : (<></>)}
+                </Nav>
+            </Navbar.Collapse>
+        </Navbar>
+    )
+};
 
 export default Header;
