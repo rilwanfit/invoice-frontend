@@ -1,10 +1,9 @@
-import Layout from '../components/Layout';
 import { Fragment } from 'react';
 import Link from 'next/link';
 
 export default function registrationSuccess() {
     return (
-        <Layout>
+        <Fragment>
             <div class="text-center">
                 <h1 class="display-3">Thank You!</h1>
                 <p class="lead"><strong>Please check your email</strong> for further instructions on how to complete your account setup.</p>
@@ -18,6 +17,6 @@ export default function registrationSuccess() {
                     </Link>
                 </p>
             </div>
-        </Layout>
+        </Fragment>
     );
 }

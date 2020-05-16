@@ -1,9 +1,7 @@
-import Layout from '../components/Layout';
+import LoginForm from '../components/LoginForm';
 
 export default function Index() {
     return (
-        <Layout>
-        <p>Hello Next.js</p>
-      </Layout>
+        <LoginForm />
     );
   }
