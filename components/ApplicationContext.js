@@ -18,6 +18,7 @@ const appReducer = (state, action) => {
                 authenticated: true
             }
         case 'LOGOUT':
+            cookies.remove('token')
             return {
                 ...state,
                 authenticated: false

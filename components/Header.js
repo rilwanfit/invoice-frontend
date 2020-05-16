@@ -1,84 +1,112 @@
-import Link from './Link';
-import Navbar from 'react-bootstrap/Navbar'
-import Nav from 'react-bootstrap/Nav'
-import NavDropdown from 'react-bootstrap/NavDropdown'
-import { Fragment, useContext } from 'react';
 
-import { ApplicationContext } from './ApplicationContext'
+import { makeStyles } from '@material-ui/core/styles';
+import Link from "next/link";
 
-const Header = () => {
-    const {
-        authenticated
-    } = useContext(ApplicationContext)
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Button from '@material-ui/core/Button';
+
+import MenuIcon from '@material-ui/icons/Menu';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import CategoryIcon from '@material-ui/icons/Category';
+import SettingsIcon from '@material-ui/icons/Settings';
+import InboxIcon from '@material-ui/icons/Inbox';
+import DraftsIcon from '@material-ui/icons/Drafts';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+    },
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+        [theme.breakpoints.up('sm')]: {
+            display: 'none',
+        },
+    },
+    title: {
+        flexGrow: 1,
+    },
+}));
+
+const Header = (props) => {
+
+    const classes = useStyles();
+
+    const [auth, setAuth] = React.useState(true);
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleChange = (event) => {
+        setAuth(event.target.checked);
+    };
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     return (
-        <Navbar className="header" collapseOnSelect expand="lg" bg="dark" variant="dark">
-            <Navbar.Brand href="#home">Company Logo</Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse id="responsive-navbar-nav">
-                {authenticated ? (
-                    <Nav className="mr-auto">
-                        <Link href="/dashboard">
-                            <a className="nav-link">Dashboard</a>
-                        </Link>
-                        <Link href="/invoice">
-                            <a className="nav-link">Verzonden</a>
-                        </Link>
-                        <Link href="/invoice-type-2">
-                            <a className="nav-link">Ontvangen facturen</a>
-                        </Link>
-                        <Link href="/product">
-                            <a className="nav-link">Product</a>
-                        </Link>
+        <AppBar position="fixed" className={classes.appBar}>
+            <Toolbar>
+                <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    edge="start"
+                    onClick={props.handleDrawerToggle}
+                    className={classes.menuButton}
+                >
+                    <MenuIcon />
+                </IconButton>
+                <Typography variant="h6" className={classes.title}>Company Logo</Typography>
 
-                        <Link href="/category">
-                            <a className="nav-link">Category</a>
-                        </Link>
-                        <Link href="/settings">
-                            <a className="nav-link">Instellingen</a>
-                        </Link>
-                    </Nav>
-                ) : (
-                        <Nav className="mr-auto">
-                            <Link href="/register">
-                                <a className="nav-link">Register</a>
-                            </Link>
-                            <Link href="/">
-                                <a className="nav-link">Login</a>
-                            </Link>
-                        </Nav>
-                    )}
-                <Nav>
-                    {authenticated ? (
-                        <Nav className="mr-auto">
-                        <NavDropdown title={
-                            <>
-
-                                <span className="mr-2 d-none d-lg-inline text-gray-600 small">Valerie Luna</span>
-                                <img className="img-profile rounded-circle" src="https://img.icons8.com/clouds/100/000000/user.png" />
-                            </>
-                        } id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">
-
-
-                                <i className="fas fa-users fa-sm fa-fw mr-2 text-gray-400" /> Profile
-                    </NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">
-                                <i className="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400" />
-       Settings
-     </NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="/logout">
-                                <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400" />
-       Logout
-     </NavDropdown.Item>
-                        </NavDropdown>
-                    </Nav>
-                    ) : (<></>)}
-                </Nav>
-            </Navbar.Collapse>
-        </Navbar>
+                {auth && (
+                    <div>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={open}
+                            onClose={handleClose}
+                        >
+                            <MenuItem onClick={handleClose}>Profile</MenuItem>
+                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                        </Menu>
+                    </div>
+                )}
+            </Toolbar>
+        </AppBar>
     )
-};
+}
 
 export default Header;

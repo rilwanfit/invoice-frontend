@@ -1,15 +1,23 @@
-import { Fragment } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Header from './Header';
+import Footer from './Footer';
 
-const Layout = props => (
-  <Fragment>
-    <Header />
-    <div className="container mt-5">
-      <div className="container-fluid pt-2 pb-5 pt-md-4 px-md-5 shadow">
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+}));
+
+const Layout = props => {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.root}>
+      <Header />
         {props.children}
-      </div>
+      <Footer />
     </div>
-  </Fragment>
-);
+  )
+}
 
 export default Layout;
