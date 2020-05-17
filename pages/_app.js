@@ -30,9 +30,6 @@ export default function MyApp(props) {
         <ApplicationProvider>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          {/* <Layout>
-            <Component {...pageProps} />
-          </Layout> */}
           <ResponsiveDrawer>
           <Component {...pageProps} />
           </ResponsiveDrawer>
