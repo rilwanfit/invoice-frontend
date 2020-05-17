@@ -3,8 +3,6 @@ import Link from "next/link";
 import { useRouter } from 'next/router'
 
 import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
@@ -15,6 +13,9 @@ import MenuItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import CategoryIcon from '@material-ui/icons/Category';
@@ -53,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
         padding: 40,
         marginTop: 20
     },
+    nested: {
+        paddingLeft: theme.spacing(4),
+    },
 }));
 
 function ResponsiveDrawer(props) {
@@ -62,6 +66,17 @@ function ResponsiveDrawer(props) {
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
+    const [openSettingsMenu, setOpenSettingsMenu] = React.useState(true);
+    const [openInvoiceMenu, setOpenInvoiceMenu] = React.useState(true);
+
+    const handleSettingsMenuClick = () => {
+        setOpenSettingsMenu(!openSettingsMenu);
+    };
+
+    const handleInvoiceMenuClick = () => {
+        setOpenInvoiceMenu(!openInvoiceMenu);
+    };
+
     const {
         authenticated
     } = useContext(ApplicationContext)
@@ -69,9 +84,6 @@ function ResponsiveDrawer(props) {
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
-
-    console.log(authenticated);
-    
 
     const drawer = (
         <div>
@@ -86,10 +98,20 @@ function ResponsiveDrawer(props) {
                     </MenuItem>
                 </Link>
                 <Link href="/invoice" passHref>
-                    <MenuItem button selected={((router.pathname === "/invoice") ? true : false)} >
+                    <MenuItem button onClick={handleInvoiceMenuClick} selected={((router.pathname === "/invoice") ? true : false)} >
                         <Button variant="text" color="secondary" startIcon={<DraftsIcon />}>Verzonden</Button>
+                        {openInvoiceMenu ? <ExpandLess /> : <ExpandMore />}
                     </MenuItem>
                 </Link>
+                <Collapse in={openInvoiceMenu} timeout="auto" unmountOnExit>
+                    <MenuList className={classes.nested}>
+                        <Link href="/create-invoice" passHref>
+                            <MenuItem selected={((router.pathname === "/create-invoice") ? true : false)} >
+                                <Button variant="text" component="a" startIcon={<SettingsIcon />}> Create Invoice</Button>
+                            </MenuItem>
+                        </Link>
+                    </MenuList>
+                </Collapse>
                 <Link href="/outgoing-invoice" passHref>
                     <MenuItem button selected={((router.pathname === "/outgoing-invoice") ? true : false)} >
                         <Button variant="text" component="a" startIcon={<InboxIcon />}> Ontvangen facturen </Button>
@@ -106,10 +128,25 @@ function ResponsiveDrawer(props) {
                     </MenuItem>
                 </Link>
                 <Link href="/settings" passHref>
-                    <MenuItem button selected={((router.pathname === "/settings") ? true : false)} >
+                    <MenuItem onClick={handleSettingsMenuClick} button selected={((router.pathname === "/settings") ? true : false)} >
                         <Button variant="text" component="a" startIcon={<SettingsIcon />}> Instellingen</Button>
+                        {openSettingsMenu ? <ExpandLess /> : <ExpandMore />}
                     </MenuItem>
                 </Link>
+                <Collapse in={openSettingsMenu} timeout="auto" unmountOnExit>
+                    <MenuList className={classes.nested}>
+                        <Link href="/company-info" passHref>
+                            <MenuItem selected={((router.pathname === "/company-info") ? true : false)} >
+                                <Button variant="text" component="a" startIcon={<SettingsIcon />}> Company Info</Button>
+                            </MenuItem>
+                        </Link>
+                        <Link href="/vat-tariffs" passHref>
+                            <MenuItem selected={((router.pathname === "/vat-tariffs") ? true : false)} >
+                                <Button variant="text" component="a" startIcon={<SettingsIcon />}> Vat tariffs</Button>
+                            </MenuItem>
+                        </Link>
+                    </MenuList>
+                </Collapse>
             </MenuList >
             <Divider />
         </div >
