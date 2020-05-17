@@ -1,13 +1,13 @@
 body {
-  font-family: HelveticaNeue-LightItalic;
-  padding: 20px 20px 60px;
-  max-width: 1920px;
-  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background-color: #f8f9fc;
 }
 
 a {
   cursor: pointer;
+  text-decoration: none;
 }
 
 .btn-primary {
@@ -60,90 +60,4 @@ hr.style15 {
 
 .invoice-info {
   margin: 20px auto;
-}
-
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  padding: 0 24px;
-  width: 100%;
-  height: 66px;
-  background: linear-gradient(to right, #6620d6 40%, #6c35d1);
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-  backface-visibility: hidden;
-}
-
-@supports (width: var(--scrollbar-width)) {
-  .has-disabled-scroll .header {
-    padding-right: calc(24px + var(--scrollbar-width));
-  }
-}
-
-.header--with-nav {
-  padding-left: 72px;
-}
-
-.header__logo {
-  display: flex;
-  align-items: center;
-}
-
-.header__logo a:not(.btn):focus {
-  outline: none;
-  background: transparent;
-  box-shadow: none;
-}
-
-.header__beta-badge {
-  margin-left: 12px;
-}
-
-.header__user-profile {
-  margin-left: auto;
-  padding-left: 24px;
-}
-
-.header__user-profile-redesign {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-}
-
-.header__user-profile-workflow {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  padding-left: 24px;
-}
-
-.header__user-profile-workflow-center {
-  margin: 0 auto;
-  padding-left: 24px;
-}
-
-.header__basket-micro {
-  margin-left: 24px;
-}
-
-.header__progress-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  flex: 0 0 auto;
-  width: 100%;
-}
-
-.header__user-profile-support-redesign {
-  display: flex;
-  justify-content: center;
-  width: 50px;
-}
-
-.header__user-profile {
-  margin-left: auto;
-  padding-left: 24px;
 }
