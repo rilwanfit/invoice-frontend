@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/router'
 
@@ -25,6 +26,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
+import { ApplicationContext } from './ApplicationContext'
+
 import Header from '../components/Header'
 
 const drawerWidth = 240;
@@ -47,7 +50,8 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing(3),
+        padding: 40,
+        marginTop: 20
     },
 }));
 
@@ -58,9 +62,17 @@ function ResponsiveDrawer(props) {
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
+    const {
+        authenticated
+    } = useContext(ApplicationContext)
+
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
+
+    console.log(authenticated);
+    
+
     const drawer = (
         <div>
             <Hidden xsDown implementation="css">
@@ -70,44 +82,36 @@ function ResponsiveDrawer(props) {
             <MenuList>
                 <Link href="/dashboard" passHref>
                     <MenuItem button selected={router.pathname === "/dashboard"} >
-                        <Button variant="caption" color="secondary" startIcon={<DashboardIcon />}>Dashboard</Button>
+                        <Button variant="text" color="secondary" startIcon={<DashboardIcon />}>Dashboard</Button>
                     </MenuItem>
                 </Link>
                 <Link href="/invoice" passHref>
                     <MenuItem button selected={((router.pathname === "/invoice") ? true : false)} >
-                        <Button variant="caption" color="secondary" startIcon={<DraftsIcon />}>Verzonden</Button>
+                        <Button variant="text" color="secondary" startIcon={<DraftsIcon />}>Verzonden</Button>
                     </MenuItem>
                 </Link>
                 <Link href="/outgoing-invoice" passHref>
                     <MenuItem button selected={((router.pathname === "/outgoing-invoice") ? true : false)} >
-                        <Button variant="caption" component="a" startIcon={<InboxIcon />}> Ontvangen facturen </Button>
+                        <Button variant="text" component="a" startIcon={<InboxIcon />}> Ontvangen facturen </Button>
                     </MenuItem>
                 </Link>
                 <Link href="/product" passHref>
                     <MenuItem button selected={((router.pathname === "/product") ? true : false)} >
-                        <Button variant="caption" component="a" startIcon={<DashboardIcon />}>Product</Button>
+                        <Button variant="text" component="a" startIcon={<DashboardIcon />}>Product</Button>
                     </MenuItem>
                 </Link>
                 <Link href="/category" passHref>
                     <MenuItem button selected={((router.pathname === "/category") ? true : false)} >
-                        <Button variant="caption" component="a" startIcon={<CategoryIcon />}>Category </Button>
+                        <Button variant="text" component="a" startIcon={<CategoryIcon />}>Category </Button>
                     </MenuItem>
                 </Link>
                 <Link href="/settings" passHref>
                     <MenuItem button selected={((router.pathname === "/settings") ? true : false)} >
-                        <Button variant="caption" component="a" startIcon={<SettingsIcon />}> Instellingen</Button>
+                        <Button variant="text" component="a" startIcon={<SettingsIcon />}> Instellingen</Button>
                     </MenuItem>
                 </Link>
             </MenuList >
             <Divider />
-            <MenuList>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <MenuItem button key={text}>
-                        <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                        <ListItemText primary={text} />
-                    </MenuItem>
-                ))}
-            </MenuList>
         </div >
     );
 
@@ -115,42 +119,40 @@ function ResponsiveDrawer(props) {
 
     return (
         <div className={classes.root}>
-            <CssBaseline />
-           
-
             <Header mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
-
-            <nav className={classes.drawer} aria-label="mailbox folders">
-                {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-                <Hidden smUp implementation="css">
-                    <Drawer
-                        container={container}
-                        variant="temporary"
-                        anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-                        open={mobileOpen}
-                        onClose={handleDrawerToggle}
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        ModalProps={{
-                            keepMounted: true, // Better open performance on mobile.
-                        }}
-                    >
-                        {drawer}
-                    </Drawer>
-                </Hidden>
-                <Hidden xsDown implementation="css">
-                    <Drawer
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        variant="permanent"
-                        open
-                    >
-                        {drawer}
-                    </Drawer>
-                </Hidden>
-            </nav>
+            {authenticated &&
+                <nav className={classes.drawer} aria-label="mailbox folders">
+                    {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+                    <Hidden smUp implementation="css">
+                        <Drawer
+                            container={container}
+                            variant="temporary"
+                            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+                            open={mobileOpen}
+                            onClose={handleDrawerToggle}
+                            classes={{
+                                paper: classes.drawerPaper,
+                            }}
+                            ModalProps={{
+                                keepMounted: true, // Better open performance on mobile.
+                            }}
+                        >
+                            {drawer}
+                        </Drawer>
+                    </Hidden>
+                    <Hidden xsDown implementation="css">
+                        <Drawer
+                            classes={{
+                                paper: classes.drawerPaper,
+                            }}
+                            variant="permanent"
+                            open
+                        >
+                            {drawer}
+                        </Drawer>
+                    </Hidden>
+                </nav>
+            }
             <main className={classes.content}>
                 <div className={classes.toolbar} />
                 {props.children}
