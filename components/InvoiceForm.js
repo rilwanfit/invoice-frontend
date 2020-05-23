@@ -49,40 +49,32 @@ const Invoice = ({ _username, _password }) =>
 
 const InvoiceForm = () => {
     return (
-        <div className="container">
-            <div className="row">
-                <div className="col-lg-12">
-                <a className="btn btn-primary float-right mb-2" href="/create-invoice" role="button">+ Save invoice</a>
-                    <div className="container-fluid pt-2 pb-2 pt-md-4 px-md-5 shadow">
-                        {/* Invoice heading */}
-                        <table className="table table-borderless">
-                            <tbody>
-                                <tr>
-                                    <td className="border-0">
-                                        <div className="row">
-                                            <div className="col-md text-center text-md-left mb-3 mb-md-0">
-                                                <CompanyInfo />
-                                            </div>
-                                            <div className="col text-center text-md-right">
-                                                <CustomerInfo />
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        {/* Invoice items table */}
-                        <ProductForm />
-                        {/* Thank you note */}
-                        <h5 className="text-center pt-2">
-                            <p>Wij verzoeken u vriendelijk om het openstaand bedrag van xxxx (retrieve from total at the bottom)
-voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder
-vermelding van het factuurnummer ‘xxxxx (retrieve from #factuurnummer)’.
+        <div>
+            <table className="table table-borderless">
+                <tbody>
+                    <tr>
+                        <td className="border-0">
+                            <div className="row">
+                                <div className="col-md text-center text-md-left mb-3 mb-md-0">
+                                    <CompanyInfo />
+                                </div>
+                                <div className="col text-center text-md-right">
+                                    <CustomerInfo />
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            {/* Invoice items table */}
+            <ProductForm />
+            {/* Thank you note */}
+            <h5 className="text-center pt-2">
+                <p>Wij verzoeken u vriendelijk om het openstaand bedrag van xxxx (retrieve from total at the bottom)
+                voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder
+                vermelding van het factuurnummer ‘xxxxx (retrieve from #factuurnummer)’.
 Voor vragen kunt u contact opnemen per e-mail of telefoon.</p>
-                        </h5>
-                    </div>
-                </div>
-            </div>
+            </h5>
         </div >
     );
 };
