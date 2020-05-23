@@ -1,7 +1,11 @@
 import React, { Fragment } from 'react'
 import { Formik, Field, Form, ErrorMessage, FieldArray, useField, useFormikContext } from "formik";
+import { TextField, Select } from 'formik-material-ui';
 import * as Yup from 'yup';
-import { BsXCircleFill as DeleteIcon, BsPlusCircleFill as AddIcon } from 'react-icons/bs'
+import DeleteIcon from '@material-ui/icons/Delete';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 
 const initialValues = {
     products: [
@@ -95,47 +99,44 @@ const ProductForm = () => {
                                         {values.products.length > 0 &&
                                             values.products.map((product, index) => (
                                                 <tr key={index}>
-                                                    <td><Field
-                                                        name={`products.${index}.name`}
-                                                        placeholder="Ex: Pursuit Running Shoes"
-                                                        type="text"
-                                                        className={`form-control ${errorCheck('name', index, errors, touched) ? "is-invalid" : ""}`}
-                                                    />
-                                                        {errorCheck('name', index, errors, touched) && (
-                                                            <div className="invalid-feedback">
-                                                                {errors.products[index].name}
-                                                            </div>
-                                                        )}
+                                                    <td>
+                                                        <Field
+                                                            type="text"
+                                                            name={`products.${index}.name`}
+                                                            placeholder="Ex: Pursuit Running Shoes"
+                                                            component={TextField}
+                                                            InputProps={{ notched: true }}
+                                                        />
                                                     </td>
-                                                    <td><Field
-                                                        name={`products.${index}.quantity`}
-                                                        placeholder="Enter quantity"
-                                                        type="number"
-                                                        step="1"
-                                                        min="1" max="999"
-                                                        className="form-control"
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                            product.total = product.price
-                                                                ? e.target.value * product.price
-                                                                : 0;
-                                                        }}
-                                                        onBlur={e => {
-                                                            handleBlur(e);
-                                                            product.total = product.price
-                                                                ? e.target.value * product.price
-                                                                : 0;
-                                                        }}
-                                                    />
-
+                                                    <td>
+                                                        <Field
+                                                            type="number"
+                                                            name={`products.${index}.quantity`}
+                                                            placeholder="Enter quantity"
+                                                            component={TextField}
+                                                            InputProps={{ notched: true }}
+                                                            onChange={e => {
+                                                                handleChange(e);
+                                                                product.total = product.price
+                                                                    ? e.target.value * product.price
+                                                                    : 0;
+                                                            }}
+                                                            onBlur={e => {
+                                                                handleBlur(e);
+                                                                product.total = product.price
+                                                                    ? e.target.value * product.price
+                                                                    : 0;
+                                                            }}
+                                                            min="1" max="999"
+                                                        />
                                                     </td>
                                                     <td><Field
                                                         name={`products.${index}.price`}
+                                                        component={TextField}
                                                         placeholder="Enter price"
                                                         type="number"
                                                         min="0.00"
                                                         max="9999999.99"
-                                                        className="form-control"
                                                         onChange={e => {
                                                             handleChange(e);
                                                             product.total = product.quantity
@@ -152,7 +153,7 @@ const ProductForm = () => {
 
                                                     </td>
                                                     <td>
-                                                        <Field name={`products.${index}.tax`} as="select" placeholder="21% BTW" className="form-control">
+                                                        <Field name={`products.${index}.tax`} component={Select} placeholder="21% BTW">
                                                             <option value="0.00" label="0% btw" />
                                                             <option value="0.21" label="21 % btw" />
                                                             <option value="0.09" label="9% btw" />
@@ -160,31 +161,28 @@ const ProductForm = () => {
                                                     </td>
                                                     <td className="font-weight-bold align-middle text-right text-nowrap"><Field
                                                         name={`products.${index}.total`}
+                                                        component={TextField}
                                                         placeholder=""
                                                         disabled={true}
                                                         type="number"
                                                         min="0.00"
                                                         max="9999999.99"
-                                                        className="form-control"
                                                     /></td>
-                                                    <td><span
-                                                        type="button"
-                                                        className="secondary"
-                                                        onClick={() => remove(index)}
-                                                    >
-                                                        <DeleteIcon size="1.25em" color="red" />
-                                                    </span></td>
+                                                    <td>
+                                                        <IconButton aria-label="delete" className="secondary" onClick={() => remove(index)}>
+                                                            <DeleteIcon size="1.25em" color="red" />
+                                                        </IconButton>
+                                                    </td>
                                                 </tr>
                                             ))}
                                         <tr>
                                             <td colSpan={5}>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-primary mb-2"
+                                                <Button
+                                                    variant="contained"
+                                                    color="secondary"
                                                     onClick={() => push({ name: "" })}
-                                                >
-                                                    <AddIcon size="1.25em" color="white" /> Add Product
-                </button>
+                                                >Add Product</Button>
+
                                             </td>
                                         </tr>
                                     </Fragment>
