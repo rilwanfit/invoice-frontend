@@ -1,7 +1,6 @@
-import { Fragment } from 'react';
+import { useState, useContext } from 'react';
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -36,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function createInvoice() {
     const classes = useStyles();
+
     return (
         <div className={classes.root}>
             <InvoiceProvider>
@@ -59,13 +59,6 @@ export default function createInvoice() {
                             <Card className={classes.root} elevation={0}>
                                 <CardContent>
                                     <ProductForm />
-                                    {/* Thank you note */}
-                                    <Typography variant="h5" component="h2">
-                                        Wij verzoeken u vriendelijk om het openstaand bedrag van xxxx (retrieve from total at the bottom)
-                                        voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder
-                                        vermelding van het factuurnummer ‘xxxxx (retrieve from #factuurnummer)’.
-                                        Voor vragen kunt u contact opnemen per e-mail of telefoon.
-                            </Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
