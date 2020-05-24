@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Formik, Field, Form, ErrorMessage, FieldArray, useField, useFormikContext } from "formik";
 import { TextField, Select } from 'formik-material-ui';
 import * as Yup from 'yup';
@@ -18,7 +18,6 @@ const initialValues = {
         }
     ]
 };
-
 export const validateSchema = Yup.object().shape({
     products: Yup.array()
         .of(
@@ -29,35 +28,6 @@ export const validateSchema = Yup.object().shape({
         )
         .min(1, "Need at least a product")
 });
-
-const TotalField = props => {
-    const {
-        values: { price, tax },
-        touched,
-        setFieldValue,
-    } = useFormikContext();
-    const [field, meta] = useField(props);
-
-    React.useEffect(() => {
-        console.log(touched.price);
-
-        // set the value of Total, based on price and tax
-        if (
-            //   price.trim() !== '' &&
-            //   tax.trim() !== '' &&
-            touched.price &&
-            touched.tax
-        ) {
-            setFieldValue(props.name, `price`);
-        }
-    }, [tax, price, touched.price, touched.tax, setFieldValue, props.name]);
-
-    return (
-        <>
-            {props.name.value}
-        </>
-    );
-};
 
 const errorCheck = (name, index, errors, touched) => {
     return (
@@ -73,11 +43,23 @@ const errorCheck = (name, index, errors, touched) => {
 }
 
 const ProductForm = () => {
+    const [finalAmount, setFinalAmount] = useState(100)
 
+    const finalTotalHandler = (values) => {
+        let total = 0
+        values.products.map((product, index) => (
+            total += product.total
+        ))
+    
+        setFinalAmount(total)
+    }
     return (
         <Formik
             initialValues={initialValues}
             validationSchema={validateSchema}
+            onChange={(values) => {
+                console.log('onChange')
+              }}
         >
             {({ values, errors, touched, handleReset, handleChange, setFieldValue, handleBlur }) => (
                 <Form>
@@ -105,7 +87,7 @@ const ProductForm = () => {
                                                             name={`products.${index}.name`}
                                                             placeholder="Ex: Pursuit Running Shoes"
                                                             component={TextField}
-                                                            InputProps={{ notched: true }}
+                                                            // InputProps={{ notched: true }}
                                                         />
                                                     </td>
                                                     <td>
@@ -114,19 +96,23 @@ const ProductForm = () => {
                                                             name={`products.${index}.quantity`}
                                                             placeholder="Enter quantity"
                                                             component={TextField}
-                                                            InputProps={{ notched: true }}
-                                                            onChange={e => {
+                                                            // InputProps={{ notched: true }}
+                                                            onKeyUp={e => {
                                                                 handleChange(e);
+                                                                console.log('quantity')
                                                                 product.total = product.price
                                                                     ? e.target.value * product.price
                                                                     : 0;
+
+                                                                    finalTotalHandler(values)
                                                             }}
-                                                            onBlur={e => {
-                                                                handleBlur(e);
-                                                                product.total = product.price
-                                                                    ? e.target.value * product.price
-                                                                    : 0;
-                                                            }}
+                                                            // onBlur={e => {
+                                                            //     handleBlur(e);
+                                                            //     alert('BB')
+                                                            //     product.total = product.price
+                                                            //         ? e.target.value * product.price
+                                                            //         : 0;
+                                                            // }}
                                                             min="1" max="999"
                                                         />
                                                     </td>
@@ -137,18 +123,21 @@ const ProductForm = () => {
                                                         type="number"
                                                         min="0.00"
                                                         max="9999999.99"
-                                                        onChange={e => {
+                                                        onKeyUp={e => {
+                                                            // const { value } = e.target;
+                                                            console.log('rilwan')
                                                             handleChange(e);
                                                             product.total = product.quantity
                                                                 ? e.target.value * product.quantity
                                                                 : 0;
+                                                                finalTotalHandler(values)
                                                         }}
-                                                        onBlur={e => {
-                                                            handleBlur(e);
-                                                            product.total = product.quantity
-                                                                ? e.target.value * product.quantity
-                                                                : 0;
-                                                        }}
+                                                        // onBlur={e => {
+                                                        //     handleBlur(e);
+                                                        //     product.total = product.quantity
+                                                        //         ? e.target.value * product.quantity
+                                                        //         : 0;
+                                                        // }}
                                                     />
 
                                                     </td>
@@ -170,7 +159,7 @@ const ProductForm = () => {
                                                     /></td>
                                                     <td>
                                                         <IconButton aria-label="delete" className="secondary" onClick={() => remove(index)}>
-                                                            <DeleteIcon size="1.25em" color="red" />
+                                                            <DeleteIcon size="1.25em" />
                                                         </IconButton>
                                                     </td>
                                                 </tr>
@@ -191,7 +180,7 @@ const ProductForm = () => {
                             </FieldArray>
 
                             <tr>
-                                <td colSpan={5} className="text-right border-0 pt-4"><h5>Totaal te betalen: $248.00 USD</h5></td>
+                                <td colSpan={5} className="text-right border-0 pt-4"><h5>Totaal te betalen: $ {finalAmount}</h5></td>
                             </tr>
                         </tbody>
                     </table>

@@ -1,10 +1,11 @@
-import { Fragment } from 'react';
+import { useState } from 'react';
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
 
 import CustomerInfo from '../components/InvoiceForm/CustomerInfo';
 import CompanyInfo from '../components/InvoiceForm/CompanyInfo';
@@ -36,6 +37,33 @@ const useStyles = makeStyles((theme) => ({
 
 export default function createInvoice() {
     const classes = useStyles();
+    const [isDataRequired, setIsDataRequired] = useState(false)
+
+    const onSubmit = () => {
+        axios
+            .post(process.env.RESTURL + '/login_check', {
+                username: values.email,
+                password: values.password
+            })
+            .then(response => {
+                const { token } = response.data;
+                cookies.set('token', token);
+                login()
+                Router.push('/dashboard')
+            }).catch(error => {
+                console.log(error);
+    
+                if (error.response.data.message) {
+                    //this.error = error.response.data.error;
+                    setFieldError('general', error.response.data.message);
+                } else {
+                    setFieldError('general', 'Unknown error');
+                }
+            }).finally(() => {
+                setSubmitting(false);
+            });
+    }
+
     return (
         <div className={classes.root}>
             <InvoiceProvider>
@@ -70,6 +98,12 @@ export default function createInvoice() {
                             </Card>
                         </Grid>
                     </Grid>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        disabled={isDataRequired}
+                        onClick={onSubmit}
+                    >Submit</Button>
                 </Paper>
             </InvoiceProvider>
         </div>
