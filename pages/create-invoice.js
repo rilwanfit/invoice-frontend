@@ -1,11 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 
 import CustomerInfo from '../components/InvoiceForm/CustomerInfo';
 import CompanyInfo from '../components/InvoiceForm/CompanyInfo';
@@ -37,32 +35,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function createInvoice() {
     const classes = useStyles();
-    const [isDataRequired, setIsDataRequired] = useState(false)
-
-    const onSubmit = () => {
-        axios
-            .post(process.env.RESTURL + '/login_check', {
-                username: values.email,
-                password: values.password
-            })
-            .then(response => {
-                const { token } = response.data;
-                cookies.set('token', token);
-                login()
-                Router.push('/dashboard')
-            }).catch(error => {
-                console.log(error);
-    
-                if (error.response.data.message) {
-                    //this.error = error.response.data.error;
-                    setFieldError('general', error.response.data.message);
-                } else {
-                    setFieldError('general', 'Unknown error');
-                }
-            }).finally(() => {
-                setSubmitting(false);
-            });
-    }
 
     return (
         <div className={classes.root}>
@@ -87,23 +59,10 @@ export default function createInvoice() {
                             <Card className={classes.root} elevation={0}>
                                 <CardContent>
                                     <ProductForm />
-                                    {/* Thank you note */}
-                                    <Typography variant="h5" component="h2">
-                                        Wij verzoeken u vriendelijk om het openstaand bedrag van xxxx (retrieve from total at the bottom)
-                                        voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder
-                                        vermelding van het factuurnummer ‘xxxxx (retrieve from #factuurnummer)’.
-                                        Voor vragen kunt u contact opnemen per e-mail of telefoon.
-                            </Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
                     </Grid>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        disabled={isDataRequired}
-                        onClick={onSubmit}
-                    >Submit</Button>
                 </Paper>
             </InvoiceProvider>
         </div>
