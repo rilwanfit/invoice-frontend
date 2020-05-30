@@ -13,6 +13,12 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import MuiAlert from '@material-ui/lab/Alert';
+import {
+    TimePicker,
+    DatePicker,
+    DateTimePicker,
+} from 'formik-material-ui-pickers';
+
 
 import { InvoiceContext } from '../InvoiceContext';
 import CompanyInfo from '../InvoiceForm/CompanyInfo';
@@ -41,7 +47,14 @@ export const validateSchema = Yup.object().shape({
                 quantity: Yup.number().required("required")
             })
         )
-        .min(1, "Need at least a product")
+        .min(1, "Need at least a product"),
+    postal: Yup.string()
+        .min(6, 'Voer een geldige postcode in')
+        .max(6, 'Voer een geldige postcode in')
+        .required("Voer je postcode in"),
+    city: Yup.string()
+        .required(' voer uw volledige adres in')
+
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -91,7 +104,7 @@ const ProductForm = () => {
 
     return (
         <Formik
-            initialValues={{ name: "", street_name: "", email: "", products: products }}
+            initialValues={{ name: "", street_name: "", email: "", postal: "", city: "", invoice_date: "", products: products }}
             validationSchema={validateSchema}
             onSubmit={(values, { setSubmitting, setFieldError }) => {
                 setSubmitting(false);
@@ -135,7 +148,7 @@ const ProductForm = () => {
                             <Field
                                 type="text"
                                 name='name'
-                                label="Customer name"
+                                label="Naam ontvanger"
                                 placeholder={customer.name}
                                 component={TextField}
                             />
@@ -143,15 +156,40 @@ const ProductForm = () => {
                             <Field
                                 type="text"
                                 name='street_name'
-                                label="Street name"
+                                label="Straat"
                                 placeholder={customer.street_name}
                                 component={TextField}
                             />
                             <br />
+
+                            <Grid container spacing={4}>
+                                <Grid item xs={4}>
+                                    <Field
+                                        type="text"
+                                        name='postal'
+                                        label="Postcode"
+                                        placeholder={customer.postal}
+                                        component={TextField}
+                                    />
+                                    <br />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Field
+                                        type="text"
+                                        name='city'
+                                        label="Stad"
+                                        placeholder={customer.city}
+                                        component={TextField}
+                                    />
+                                    <br />
+                                </Grid>
+
+
+                            </Grid>
                             <Field
                                 type="email"
                                 name='email'
-                                label="email"
+                                label="E-mailadres"
                                 placeholder={customer.email}
                                 component={TextField}
                             />
@@ -161,6 +199,24 @@ const ProductForm = () => {
                             <CompanyInfo />
                         </Grid>
                         <Grid item lg={6} md={6} sm={12} xs={12}>
+                            <Grid container spacing={4}>
+                                <Grid item xs={4}>
+                                    <span className="d-none d-md-block">
+                                        <h4>Factuur datum</h4>
+                                    </span>
+                                    <br />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Field
+                                        component={DateTimePicker}
+                                        name="invoice_date"
+                                        label="Verzend datum"
+                                    />
+                                    <br />
+                                </Grid>
+
+
+                            </Grid>
 
                         </Grid>
                     </Grid>
