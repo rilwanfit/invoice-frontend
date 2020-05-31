@@ -6,7 +6,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../assets/theme';
 import { ApplicationProvider } from '../components/ApplicationContext'
 import ResponsiveDrawer from '../components/ResponsiveDrawer'
-import Layout from '../components/Layout'
 
 
 export default function MyApp(props) {

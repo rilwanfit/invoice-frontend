@@ -12,7 +12,7 @@ export default function registrationSuccess() {
                     Having trouble? <a href="">Contact us</a>
                 </p>
                 <p class="lead">
-                    <Link href="/login">
+                    <Link href="/">
                         <a class="btn btn-primary btn-sm" href="" role="button">Login to create invoice</a>
                     </Link>
                 </p>

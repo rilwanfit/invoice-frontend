@@ -1,149 +1,225 @@
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import React, { useContext, useEffect } from 'react';
+import { Formik, Form, Field } from 'formik';
+import { TextField, Select } from 'formik-material-ui';
+import Button from "@material-ui/core/Button";
+import ListSubheader from '@material-ui/core/ListSubheader';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
+import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+
 import * as Yup from 'yup';
+import { Cookies } from 'react-cookie';
 import axios from 'axios';
 import Router from 'next/router'
 
-const RegisterSchema = Yup.object().shape({
+import { ApplicationContext } from './ApplicationContext'
+
+const cookies = new Cookies();
+
+function Copyright() {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {'Copyright © '}
+      <Link color="inherit" href="https://material-ui.com/">
+        Your Website
+        </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
+
+const RegisterShema = Yup.object().shape({
+  name: Yup.string()
+    .required("Naam is verplicht"),
+  company: Yup.string()
+    .required("Bedrijfsnaam is verplicht"),
   email: Yup.string()
     .email("Invalid email address format")
-    .required("Email is verplicht"),
-  companyName: Yup.string().required("Bedrijfsnaam is verplicht"),
+    .required("Email is required"),
   password: Yup.string()
-    .min(3, "Password must be 3 characters at minimum")
-    .required("Password is verplicht"),
-  name: Yup.string()
-    .required("Naam is verplicht")
+    .min(6, "Password must be 6 characters at minimum")
+    .required("Password is required")
 });
 
-const RegisterForm = () => {
-  return (
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(70),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
 
-    <div className="col-lg-12">
-      <Formik
-        initialValues={{ name: "", companyName: "", email: "", referrer: "my_network", password: "" }}
-        validationSchema={RegisterSchema}
-        onSubmit={(values, { setSubmitting, setFieldError }) => {
-          axios
-            .post(process.env.RESTURL + '/api/users', {
-              "lastname": values.name,
-              "company": {
-                "name": values.companyName
-              },
-              "username": values.email,
-              "password": values.password,
-              "referrer": values.referrer,
-            })
-            .then(response => {
-               Router.push('/registration-success')
-            }).catch(error => {
-              if (error.response.data['hydra:description']) {
-                setFieldError('general', error.response.data['hydra:description']);
-              } else {
-                setFieldError('general', 'Unknown error');
-              }
-            }).finally(() => {
-              setSubmitting(false);
-            });
-        }}
-      >
-        {({ touched, errors, isSubmitting }) => (
-          <Form>
-            <div className="form-group">
+const RegisterForm = () => {
+
+  const classes = useStyles();
+
+  const {
+    authenticated
+  } = useContext(ApplicationContext)
+
+  useEffect(() => {
+    if (authenticated) {
+      Router.push('/dashboard')
+    }
+  });
+
+  return (
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      {!authenticated && <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <AccountCircleOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">Create an account</Typography>
+        <Formik
+          initialValues={{ name: "", company: "", email: "", password: "" }}
+          validationSchema={RegisterShema}
+          onSubmit={(values, { setSubmitting, setFieldError }) => {
+            axios
+              .post(process.env.RESTURL + '/api/users', {
+                username: values.email,
+                password: values.password,
+                lastname: values.name,
+                companyName: values.company,
+                referrer: values.referrer
+              })
+              .then(response => {
+                Router.push('/registration-success')
+              }).catch(error => {
+                if (error.response.data['hydra:description']) {
+                  setFieldError('general', error.response.data['hydra:description'])
+                } else {
+                  setFieldError('general', 'Unknown error');
+                }
+              }).finally(() => {
+                setSubmitting(false);
+              });
+          }}
+        >
+          {({ errors, submitForm, isSubmitting }) => (
+            <Form className={classes.form} noValidate>
               <Field
-                type="text"
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="name"
+                label="Naam"
                 name="name"
-                placeholder="Naam"
-                className={`form-control ${
-                  touched.name && errors.name ? "is-invalid" : ""
-                  }`}
+                autoComplete="name"
+                autoFocus
+                component={TextField}
               />
-              <ErrorMessage
-                component="div"
-                name="name"
-                className="invalid-feedback"
-              />
-            </div>
-            <div className="form-group">
               <Field
-                type="bedrijfsNaam"
-                name="companyName"
-                placeholder="Bedrijfsnaam"
-                className={`form-control ${
-                  touched.companyName && errors.companyName ? "is-invalid" : ""
-                  }`}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="company"
+                label="Bedrijfsnaam"
+                name="company"
+                autoComplete="company"
+                autoFocus
+                component={TextField}
               />
-              <ErrorMessage
-                component="div"
-                name="companyName"
-                className="invalid-feedback"
-              />
-            </div>
-            <div className="form-group">
               <Field
-                type="email"
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email"
                 name="email"
-                placeholder="E-mailadres"
-                className={`form-control ${
-                  touched.email && errors.email ? "is-invalid" : ""
-                  }`}
+                autoComplete="email"
+                autoFocus
+                component={TextField}
               />
-              <ErrorMessage
-                component="div"
-                name="email"
-                className="invalid-feedback"
-              />
-            </div>
-            <div className="form-group">
               <Field
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Wachtwoord"
+                id="password"
+                autoComplete="current-password"
                 type="password"
                 name="password"
-                placeholder="Wachtwoord"
-                className={`form-control ${
-                  touched.password && errors.password ? "is-invalid" : ""
-                  }`}
+                component={TextField}
               />
-              <ErrorMessage
-                component="div"
-                name="password"
-                className="invalid-feedback"
-              />
-            </div>
-            <div className="form-group" >
-              <Field as="select" name="referrer"
-                className="form-control">
-                <option disabled hidden>Hoe heb je ons gevonden?</option>
-                <optgroup label="Aanbevolen door">
-                  <option defaultValue value="my_network">Mijn netwerk</option>
-                  <option value="my_advicer">Mijn adviseur</option>
-                  <option value="3">Relish</option>
-                </optgroup>
-                <optgroup label="Social Media">
-                  <option value="4">>Facebook</option>
-                  <option value="5">LinkedIn</option>
-                  <option value="6">Twitter</option>
-                  <option value="7">Instagram</option>
-                </optgroup>
-                <optgroup label="Overig">
-                  <option value="8">Gevonden via zoekopdracht</option>
-                  <option value="9">Kamer van Koophandel</option>
-                  <option value="10">Andere bron</option>
-                </optgroup>
-              </Field>
-            </div>
-            <button
-              type="submit"
-              className="btn btn-primary btn-block"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Please wait..." : "Gratis Aanmelden"}
-            </button>
-            <div style={{ color: 'red' }}>{errors.general}</div>
-          </Form>
-        )}
-      </Formik>
-    </div>
+              <FormControl fullWidth>
+                <InputLabel htmlFor="referrer">Hoe heb je ons gevonden?</InputLabel>
+                <Field
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  id="referrer"
+                  name="referrer"
+                  component={Select}
+                >
+                  <ListSubheader>Aanbevolen door</ListSubheader>
+                  <MenuItem value={2}>Mijn netwerk</MenuItem>
+                  <MenuItem value={4}>Mijn adviseur</MenuItem>
+                  <MenuItem value={6}>Relish</MenuItem>
+                  <ListSubheader>Social Media</ListSubheader>
+                  <MenuItem value={8}>Facebook</MenuItem>
+                  <MenuItem value={10}>LinkedIn</MenuItem>
+                  <MenuItem value={12}>Twitter</MenuItem>
+                  <MenuItem value={14}>Instagram</MenuItem>
+                  <ListSubheader>Overig</ListSubheader>
+                  <MenuItem value={16}>Gevonden via zoekopdracht</MenuItem>
+                  <MenuItem value={18}>Kamer van Koophandel</MenuItem>
+                  <MenuItem value={20}>Andere bron</MenuItem>
+                </Field>
+              </FormControl>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={isSubmitting}
+                onClick={submitForm}
+                className={classes.submit}
+              >Register</Button>
+              <div style={{ color: 'red' }}>{errors.general}</div>
+              <Grid container>
+                <Grid item xs>
+                  <Link href="/" variant="body2">
+                    {"Already have an account? Login"}
+                  </Link>
+                </Grid>
+              </Grid>
+            </Form>
+          )}
+        </Formik>
+      </div>}
+      <Box mt={8}>
+        <Copyright />
+      </Box>
+    </Container>
   );
-};
+}
 
 export default RegisterForm;

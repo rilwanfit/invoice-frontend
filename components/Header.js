@@ -1,7 +1,6 @@
-
+import { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Link from "next/link";
-
+import Router from 'next/router'
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -9,16 +8,10 @@ import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Button from '@material-ui/core/Button';
 
 import MenuIcon from '@material-ui/icons/Menu';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import CategoryIcon from '@material-ui/icons/Category';
-import SettingsIcon from '@material-ui/icons/Settings';
-import InboxIcon from '@material-ui/icons/Inbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
+
+import { ApplicationContext } from './ApplicationContext'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -42,7 +35,10 @@ const Header = (props) => {
 
     const classes = useStyles();
 
-    const [auth, setAuth] = React.useState(true);
+    const {
+        authenticated,
+        logout
+    } = useContext(ApplicationContext)
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -59,6 +55,10 @@ const Header = (props) => {
         setAnchorEl(null);
     };
 
+    const handleLogout = () => {
+        logout()
+    };
+
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
@@ -73,7 +73,7 @@ const Header = (props) => {
                 </IconButton>
                 <Typography variant="h6" className={classes.title}>Company Logo</Typography>
 
-                {auth && (
+                {authenticated && (
                     <div>
                         <IconButton
                             aria-label="account of current user"
@@ -101,6 +101,7 @@ const Header = (props) => {
                         >
                             <MenuItem onClick={handleClose}>Profile</MenuItem>
                             <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         </Menu>
                     </div>
                 )}

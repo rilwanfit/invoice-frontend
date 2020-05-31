@@ -1,15 +1,33 @@
-import { Fragment } from 'react';
+import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
+import { makeStyles } from '@material-ui/core/styles';
+
 import RegisterForm from '../components/RegisterForm';
 
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        width: '50%',
+        marginTop: 20,
+        padding: 30
+    },
+    alignItemsAndJustifyContent: {
+        width: 500,
+        height: 80,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+}));
+
 export default function Register() {
+    const classes = useStyles();
     return (
-        <Fragment>
-            <div className="container">
-                <h1 className="mt-1">Register Form</h1>
-                <div className="row">
-                    <RegisterForm />
-                </div>
-            </div>
-        </Fragment>
+        <Grid container>
+        <Grid item xs={12} m="auto" className={classes.alignItemsAndJustifyContent}>
+            <Paper className={classes.paper}>
+                <RegisterForm />
+            </Paper>
+        </Grid>
+    </Grid>
     );
 }

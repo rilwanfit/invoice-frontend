@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
       },
 }));
 
-
 export default function Index() {
     const classes = useStyles();
 
@@ -27,7 +26,6 @@ export default function Index() {
         <Grid container>
             <Grid item xs={12} m="auto" className={classes.alignItemsAndJustifyContent}>
                 <Paper className={classes.paper}>
-                    <h1>Login Form</h1>
                     <LoginForm />
                 </Paper>
             </Grid>
