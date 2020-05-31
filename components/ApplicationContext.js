@@ -1,5 +1,6 @@
 import React, { createContext, useReducer } from 'react'
 import { Cookies } from 'react-cookie';
+import Router from 'next/router'
 
 export const ApplicationContext = createContext();
 
@@ -40,6 +41,7 @@ export const ApplicationProvider = (props) => {
         dispatch({
             type: "LOGOUT"
         })
+        Router.push('/')
     }
 
     const { loading, authenticated } = state;

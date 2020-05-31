@@ -1,6 +1,18 @@
-import React, { useContext } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import LinearProgress from "@material-ui/core/LinearProgress";
+import React, { useContext, useEffect } from 'react';
+import { Formik, Form, Field } from 'formik';
+import { TextField } from 'formik-material-ui';
+import Button from "@material-ui/core/Button";
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
+import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 import * as Yup from 'yup';
 import { Cookies } from 'react-cookie';
@@ -9,19 +21,7 @@ import Router from 'next/router'
 
 import { ApplicationContext } from './ApplicationContext'
 
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+const cookies = new Cookies();
 
 function Copyright() {
     return (
@@ -29,14 +29,12 @@ function Copyright() {
             {'Copyright © '}
             <Link color="inherit" href="https://material-ui.com/">
                 Your Website
-      </Link>{' '}
+        </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
         </Typography>
     );
 }
-
-const cookies = new Cookies();
 
 const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -49,7 +47,7 @@ const LoginSchema = Yup.object().shape({
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(30),
+        marginTop: theme.spacing(35),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -72,60 +70,50 @@ const LoginForm = () => {
     const classes = useStyles();
 
     const {
-        login
+        login,
+        authenticated
     } = useContext(ApplicationContext)
 
+    useEffect(() => {
+        if (authenticated) {
+            Router.push('/dashboard')
+        }
+    });
+
     return (
-        <Formik
-            initialValues={{ email: "", password: "" }}
-            validationSchema={LoginSchema}
-            onSubmit={(values, { setSubmitting, setFieldError }) => {
-                axios
-                    .post(process.env.RESTURL + '/login_check', {
-                        username: values.email,
-                        password: values.password
-                    })
-                    .then(response => {
-                        const { token } = response.data;
-                        cookies.set('token', token);
-                        login()
-                        Router.push('/dashboard')
-                    }).catch(error => {
-                        console.log(error);
-
-                        if (error.response.data.message) {
-                            //this.error = error.response.data.error;
-                            setFieldError('general', error.response.data.message);
-                        } else {
-                            setFieldError('general', 'Unknown error');
-                        }
-                    }).finally(() => {
-                        setSubmitting(false);
-                    });
-            }}
-        >
-            {({ touched, errors, submitForm, isSubmitting }) => (
-                // <Form>
-
-                //     <br />
-                //     
-                //     <br />
-                //     {isSubmitting && <LinearProgress />}
-                //     <Button
-                //         variant="contained"
-                //         color="primary"
-                //         disabled={isSubmitting}
-                //         onClick={submitForm}
-                //     >Submit</Button>
-                //     <div style={{ color: 'red' }}>{errors.general}</div>
-                // </Form>
-                <Container component="main" maxWidth="xs">
-                    <CssBaseline />
-                    <div className={classes.paper}>
-                        <Avatar className={classes.avatar}>
-                            <LockOutlinedIcon />
-                        </Avatar>
-                        <Typography component="h1" variant="h5">Inloggen</Typography>
+        <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            {!authenticated && <div className={classes.paper}>
+                <Avatar className={classes.avatar}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">Inloggen</Typography>
+                <Formik
+                    initialValues={{ email: "", password: "" }}
+                    validationSchema={LoginSchema}
+                    onSubmit={(values, { setSubmitting, setFieldError }) => {
+                        axios
+                            .post(process.env.RESTURL + '/login_check', {
+                                username: values.email,
+                                password: values.password
+                            })
+                            .then(response => {
+                                const { token } = response.data;
+                                cookies.set('token', token);
+                                login()
+                                Router.push('/dashboard')
+                            }).catch(error => {
+                                if (error.response) {
+                                    setFieldError('general', error.response.data.message);
+                                } else {
+                                    setFieldError('general', 'Unknown error');
+                                }
+                            }).finally(() => {
+                                setSubmitting(false);
+                            });
+                    }}
+                >
+                    {({ errors, submitForm, isSubmitting }) => (
                         <Form className={classes.form} noValidate>
                             <Field
                                 variant="outlined"
@@ -144,12 +132,12 @@ const LoginForm = () => {
                                 margin="normal"
                                 required
                                 fullWidth
-                                name="password"
                                 label="Password"
-                                type="password"
                                 id="password"
-                                component={TextField}
                                 autoComplete="current-password"
+                                type="password"
+                                name="password"
+                                component={TextField}
                             />
                             <FormControlLabel
                                 control={<Checkbox value="remember" color="primary" />}
@@ -160,15 +148,14 @@ const LoginForm = () => {
                                 fullWidth
                                 variant="contained"
                                 color="primary"
+                                disabled={isSubmitting}
+                                onClick={submitForm}
                                 className={classes.submit}
-                            >
-                                Sign In
-          </Button>
+                            >Inloggen</Button>
+                            <div style={{ color: 'red' }}>{errors.general}</div>
                             <Grid container>
                                 <Grid item xs>
-                                    <Link href="/forgot-password" variant="body2">
-                                        Forgot password?
-              </Link>
+                                    <Link href="#" variant="body2">Forgot password?</Link>
                                 </Grid>
                                 <Grid item>
                                     <Link href="/register" variant="body2">
@@ -177,13 +164,13 @@ const LoginForm = () => {
                                 </Grid>
                             </Grid>
                         </Form>
-                    </div>
-                    <Box mt={8}>
-                        <Copyright />
-                    </Box>
-                </Container>
-            )}
-        </Formik>
+                    )}
+                </Formik>
+            </div>}
+            <Box mt={8}>
+                <Copyright />
+            </Box>
+        </Container>
     );
 }
 
