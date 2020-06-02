@@ -102,7 +102,9 @@ const RegisterForm = () => {
                 username: values.email,
                 password: values.password,
                 lastname: values.name,
-                companyName: values.company,
+                company: {
+                  name: values.company
+                },
                 referrer: values.referrer
               })
               .then(response => {

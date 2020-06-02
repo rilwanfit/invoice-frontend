@@ -37,7 +37,8 @@ const Header = (props) => {
 
     const {
         authenticated,
-        logout
+        logout,
+        username
     } = useContext(ApplicationContext)
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -75,6 +76,7 @@ const Header = (props) => {
 
                 {authenticated && (
                     <div>
+                        {username && <Typography variant="p" className={classes.title}>Welkom {username}</Typography>}
                         <IconButton
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
