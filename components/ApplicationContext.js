@@ -8,7 +8,11 @@ const cookies = new Cookies();
 
 const initialState = {
     loading: false,
-    authenticated: cookies.get('token') ? true : false
+    authenticated: cookies.get('token') ? true : false,
+    token: cookies.get('token') || '',
+    hasCompanyDetails: false,
+    username: cookies.get('username') || '',
+    userid: cookies.get('userid') || '',
 }
 
 const appReducer = (state, action) => {
@@ -16,13 +20,27 @@ const appReducer = (state, action) => {
         case 'AUTHENTICATE':
             return {
                 ...state,
-                authenticated: true
+                authenticated: true,
+                token: cookies.get('token')
             }
         case 'LOGOUT':
             cookies.remove('token')
+            cookies.remove('username')
+            cookies.remove('userid')
             return {
                 ...state,
                 authenticated: false
+            }
+        case 'COMPLETE_COMPANY_DETAILS':
+            return {
+                ...state,
+                hasCompanyDetails: true
+            }
+        case 'SET_USERNAME':
+            return {
+                ...state,
+                username: action.username,
+                userid: action.userid,
             }
         default:
             return state
@@ -44,13 +62,35 @@ export const ApplicationProvider = (props) => {
         Router.push('/')
     }
 
-    const { loading, authenticated } = state;
+    const completeCompanyDetails = () => {
+        dispatch({
+            type: "COMPLETE_COMPANY_DETAILS"
+        })
+    }
+
+    const setUsername = (username, userid) => {
+        dispatch({
+            type: "SET_USERNAME",
+            action: {
+                username: username,
+                userid: userid
+            }
+        })
+    }
+
+    const { loading, authenticated, hasCompanyDetails, username, userid, token } = state;
 
     const providerValue = {
         loading,
         authenticated,
         login,
-        logout
+        logout,
+        hasCompanyDetails,
+        completeCompanyDetails,
+        username,
+        userid,
+        setUsername,
+        token
     }
 
     return (

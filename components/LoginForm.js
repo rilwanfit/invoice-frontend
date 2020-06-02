@@ -71,7 +71,9 @@ const LoginForm = () => {
 
     const {
         login,
-        authenticated
+        authenticated,
+        hasCompanyDetails,
+        setUsername
     } = useContext(ApplicationContext)
 
     useEffect(() => {
@@ -101,7 +103,29 @@ const LoginForm = () => {
                                 const { token } = response.data;
                                 cookies.set('token', token);
                                 login()
-                                Router.push('/dashboard')
+                                axios
+                                    .get(process.env.RESTURL + '/profile', {
+                                        headers: {
+                                            Authorization: 'Bearer ' + cookies.get('token')
+                                        }
+                                    })
+                                    .then(response => {
+                                        cookies.set('username', response.data.username);
+                                        cookies.set('userid', response.data.userid);
+                                        
+                                        setUsername(response.data.username, response.data.userid);
+
+                                    }).catch(error => {
+                                        console.log(error);
+
+                                    }).finally(() => {
+                                        if (!hasCompanyDetails) {
+                                            Router.push('/company-info')
+                                        } else {
+                                            Router.push('/dashboard')
+                                        }
+                                    });
+
                             }).catch(error => {
                                 if (error.response) {
                                     setFieldError('general', error.response.data.message);
