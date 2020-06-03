@@ -12,7 +12,6 @@ const useStyles = makeStyles((theme) => ({
     },
     alignItemsAndJustifyContent: {
         width: 500,
-        height: 80,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

@@ -42,12 +42,11 @@ const LoginSchema = Yup.object().shape({
         .required("Email is required"),
     password: Yup.string()
         .min(3, "Password must be 3 characters at minimum")
-        .required("Password is required")
+        .required("Wachtwoord is required")
 });
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(35),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -160,7 +159,7 @@ const LoginForm = () => {
                                 margin="normal"
                                 required
                                 fullWidth
-                                label="Password"
+                                label="Wachtwoord"
                                 id="password"
                                 autoComplete="current-password"
                                 type="password"
