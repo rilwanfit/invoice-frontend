@@ -45,15 +45,14 @@ const RegisterShema = Yup.object().shape({
     .required("Bedrijfsnaam is verplicht"),
   email: Yup.string()
     .email("Invalid email address format")
-    .required("Email is required"),
+    .required("Email is verplicht"),
   password: Yup.string()
     .min(6, "Password must be 6 characters at minimum")
-    .required("Password is required")
+    .required("Wachtwoord is verplicht")
 });
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(70),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -65,6 +64,10 @@ const useStyles = makeStyles((theme) => ({
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -171,7 +174,7 @@ const RegisterForm = () => {
                 component={TextField}
               />
               <FormControl fullWidth>
-                <InputLabel htmlFor="referrer">Hoe heb je ons gevonden?</InputLabel>
+                <InputLabel variant="filled" htmlFor="referrer">Hoe heb je ons gevonden?</InputLabel>
                 <Field
                   variant="outlined"
                   margin="normal"
@@ -204,7 +207,7 @@ const RegisterForm = () => {
                 disabled={isSubmitting}
                 onClick={submitForm}
                 className={classes.submit}
-              >Register</Button>
+              >Gratis Aanmelden</Button>
               <div style={{ color: 'red' }}>{errors.general}</div>
               <Grid container>
                 <Grid item xs>

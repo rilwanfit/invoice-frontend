@@ -12,22 +12,21 @@ const useStyles = makeStyles((theme) => ({
     },
     alignItemsAndJustifyContent: {
         width: 500,
-        height: 80,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-      },
+    },
 }));
 
 export default function Register() {
     const classes = useStyles();
     return (
         <Grid container>
-        <Grid item xs={12} m="auto" className={classes.alignItemsAndJustifyContent}>
+            <Grid item xs={12} m="auto" className={classes.alignItemsAndJustifyContent}>
             <Paper className={classes.paper}>
                 <RegisterForm />
             </Paper>
         </Grid>
-    </Grid>
+        </Grid>
     );
 }
