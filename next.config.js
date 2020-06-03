@@ -16,7 +16,7 @@ module.exports = phase => {
       RESTURL: (() => {
         if (isDev) return 'http://localhost:8085'
         if (isProd) {
-          return 'https://finpalstaging-env.eba-ghvphzvt.eu-west-1.elasticbeanstalk.com/'
+          return 'https://finpalstaging-env.eba-ghvphzvt.eu-west-1.elasticbeanstalk.com'
         }
         if (isStaging) return 'http://localhost:8085'
         return 'RESTURL_SPEAKERS:not (isDev,isProd && !isStaging,isProd && isStaging)'
