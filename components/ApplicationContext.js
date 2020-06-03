@@ -31,10 +31,10 @@ const appReducer = (state, action) => {
                 ...state,
                 authenticated: false
             }
-        case 'COMPLETE_COMPANY_DETAILS':
+        case 'HAS_COMPANY':
             return {
                 ...state,
-                hasCompanyDetails: true
+                hasCompanyDetails: action.payload
             }
         case 'SET_USERNAME':
             return {
@@ -62,9 +62,12 @@ export const ApplicationProvider = (props) => {
         Router.push('/')
     }
 
-    const completeCompanyDetails = () => {
+    const completeCompanyDetails = (hasCompany) => {
         dispatch({
-            type: "COMPLETE_COMPANY_DETAILS"
+            type: "HAS_COMPANY",
+            action: {
+                payload: hasCompany
+            }
         })
     }
 

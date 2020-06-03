@@ -73,12 +73,17 @@ const LoginForm = () => {
         login,
         authenticated,
         hasCompanyDetails,
+        completeCompanyDetails,
         setUsername
     } = useContext(ApplicationContext)
 
     useEffect(() => {
         if (authenticated) {
-            Router.push('/dashboard')
+            if (hasCompanyDetails) {
+                Router.push('/dashboard')
+            }
+            
+            Router.push('/company-info')
         }
     });
 
@@ -114,6 +119,7 @@ const LoginForm = () => {
                                         cookies.set('userid', response.data.userid);
                                         
                                         setUsername(response.data.username, response.data.userid);
+                                        completeCompanyDetails(response.data.hasCompany)
 
                                     }).catch(error => {
                                         console.log(error);
