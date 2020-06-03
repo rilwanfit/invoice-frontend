@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react'
+import React, { createContext, useReducer, useEffect } from 'react'
 import { Cookies } from 'react-cookie';
 import Router from 'next/router'
 
@@ -10,7 +10,6 @@ const initialState = {
     loading: false,
     authenticated: cookies.get('token') ? true : false,
     token: cookies.get('token') || '',
-    hasCompanyDetails: false,
     username: cookies.get('username') || '',
     userid: cookies.get('userid') || '',
 }
@@ -31,16 +30,11 @@ const appReducer = (state, action) => {
                 ...state,
                 authenticated: false
             }
-        case 'HAS_COMPANY':
-            return {
-                ...state,
-                hasCompanyDetails: action.payload
-            }
         case 'SET_USERNAME':
             return {
                 ...state,
-                username: action.username,
-                userid: action.userid,
+                username: cookies.get('username'),
+                userid: cookies.get('userid'),
             }
         default:
             return state
@@ -62,34 +56,24 @@ export const ApplicationProvider = (props) => {
         Router.push('/')
     }
 
-    const completeCompanyDetails = (hasCompany) => {
-        dispatch({
-            type: "HAS_COMPANY",
-            action: {
-                payload: hasCompany
-            }
-        })
-    }
-
-    const setUsername = (username, userid) => {
+    const setUsername = () => {
         dispatch({
             type: "SET_USERNAME",
-            action: {
-                username: username,
-                userid: userid
-            }
         })
     }
 
-    const { loading, authenticated, hasCompanyDetails, username, userid, token } = state;
+    const { loading, authenticated, username, userid, token } = state;
+
+    console.log('userid');
+    console.log(userid);
+    console.log(authenticated);
+    
 
     const providerValue = {
         loading,
         authenticated,
         login,
         logout,
-        hasCompanyDetails,
-        completeCompanyDetails,
         username,
         userid,
         setUsername,

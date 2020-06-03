@@ -1,4 +1,4 @@
-import React, { useContext, useState, Fragment } from 'react'
+import React, { useContext, useState, Fragment, useEffect } from 'react'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles';
 import { Formik, Field, Form, ErrorMessage, FieldArray, useField, useFormikContext } from "formik";
@@ -10,9 +10,15 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import LinearProgress from "@material-ui/core/LinearProgress";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import MuiAlert from '@material-ui/lab/Alert';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import {
     DatePicker
 } from 'formik-material-ui-pickers';
@@ -58,24 +64,30 @@ export const validateSchema = Yup.object().shape({
 const useStyles = makeStyles((theme) => ({
     root: {
 
-    }
+    },
+    mediaQuery: theme.breakpoints.down('sm')
 }));
 
-const InvoiceForm = () => {
+const InvoiceForm = (props) => {
     const [finalAmount, setFinalAmount] = useState(100)
     const [open, setOpen] = React.useState(false);
+    const [hasCompanyAlert, setHasCompanyAlert] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState('');
     const [isDataRequired, setIsDataRequired] = useState(false)
 
     const classes = useStyles();
 
+    const fullScreen = useMediaQuery(classes.mediaQuery);
+
     const {
         products,
         addProduct,
         customer,
-        hasCompany,
         company,
-        invoice_data
+        updateCompany,
+        invoice_data,
+        userid,
+        token
     } = useContext(InvoiceContext)
 
     const handleClick = () => {
@@ -98,6 +110,45 @@ const InvoiceForm = () => {
 
         setFinalAmount(total)
     }
+
+
+    useEffect(() => {
+        axios
+            .get(process.env.RESTURL + '/api/users/' + userid, {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    let company = {
+                        name: response.data.company.name,
+                        street_name: response.data.company.address,
+                        postal_address: response.data.company.address,
+                        phone_number: response.data.company.phone,
+                        email: response.data.company.email,
+                        website: 'www.info.com',
+                        kvk_number: response.data.company.kvkNumber,
+                        vat_number: response.data.company.vatNumber,
+                        iban: response.data.company.iban,
+                        provided: response.data.company.provided,
+                    }
+
+                    updateCompany(company)
+
+                    if (company.provided === false) {
+                        setHasCompanyAlert(true)
+                    }
+                }
+
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+            });
+    }, []);
+
+
+    
 
     return (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -194,18 +245,36 @@ const InvoiceForm = () => {
                                 {/* <h5 className="mb-0 mt-3">{invoice_data.due_date}</h5> */}
                             </Grid>
                             <Grid item lg={6} md={6} sm={12} xs={12}>
+
+                                <Dialog
+                                    fullScreen={fullScreen}
+                                    open={hasCompanyAlert}
+                                    aria-labelledby="responsive-dialog-title"
+                                >
+                                    <DialogTitle id="responsive-dialog-title">{"Company details required"}</DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText>
+                                            Please provide company details before create an invoice.
+          </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button variant="contained" color="primary" autoFocus href="/company-info">
+                                            Agree, Create company details
+          </Button>
+                                    </DialogActions>
+                                </Dialog>
+
                                 <img className="logo img-fluid mb-3" src="https://docamatic.s3-eu-west-1.amazonaws.com/assets/360_logo.png" style={{ maxHeight: '140px' }} />
                                 <br />
                                 <h2 className="mb-1">{company.name}</h2>
-                                {company.name}, {company.name}<br />
                                 {company.website}  / {company.phone_number}<br />
                                 <strong>{company.email}</strong>
                                 <br />
                                 <br />
                                 <h3>Verkoopfactuur {invoice_data.invoice_number}</h3>
-                        KVK-nummer: {invoice_data.kvk_number}<br />
-                        BTW-nummer: {invoice_data.vat_number}<br />
-                        IBAN: {invoice_data.iban}<br />
+                        KVK-nummer: {company.kvk_number}<br />
+                        BTW-nummer: {company.vat_number}<br />
+                        IBAN: {company.iban}<br />
                             </Grid>
                             <Grid item lg={6} md={6} sm={12} xs={12}>
                                 <Grid container spacing={4}>
