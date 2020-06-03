@@ -1,5 +1,9 @@
 import React, { Fragment, useContext } from 'react'
+import Button from '@material-ui/core/Button';
+import EditIcon from '@material-ui/icons/Edit';
+
 import { InvoiceContext } from '../InvoiceContext';
+import MyButton from '../MyButton'
 
 const CustomerInfo = () => {
 
@@ -14,13 +18,14 @@ const CustomerInfo = () => {
             <span className="d-none d-md-block">
                 <h1>Billed To</h1>
             </span>
-            <h4 className="mb-0">{customer.name}</h4>
-            {customer.street_name}<br />
-            {customer.postal_address}<br />
-            {customer.email}<br />
-            <h5 className="mb-0 mt-3">{invoice_data.due_date}</h5>
-            <br />
-            <br />
+            <MyButton tip="Edit cutomer details" onClick="handleEditCustomer" btnClassName="button"><EditIcon color="primary" /></MyButton>
+                <h4 className="mb-0">{customer.name}</h4>
+                {customer.street_name}<br />
+                {customer.postal_address}<br />
+                {customer.email}<br />
+                <h5 className="mb-0 mt-3">{invoice_data.due_date}</h5>
+                <br />
+                <br />
             Factuurnummer: {invoice_data.invoice_number} <br />
             Factuurdatum: {invoice_data.create_date}<br />
             Vervaldatum: {invoice_data.due_date}<br />
