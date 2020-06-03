@@ -1,4 +1,6 @@
 import React, { useContext, useState, Fragment } from 'react'
+import Grid from '@material-ui/core/Grid'
+import { makeStyles } from '@material-ui/core/styles';
 import { Formik, Field, Form, ErrorMessage, FieldArray, useField, useFormikContext } from "formik";
 import { TextField, Select } from 'formik-material-ui';
 import * as Yup from 'yup';
@@ -13,16 +15,25 @@ import Divider from '@material-ui/core/Divider';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import { InvoiceContext } from '../InvoiceContext';
+import CompanyInfo from '../InvoiceForm/CompanyInfo';
 
 import { Cookies } from 'react-cookie';
 const cookies = new Cookies();
-
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 export const validateSchema = Yup.object().shape({
+    name: Yup.string()
+        .min(3, "name must be 3 characters at minimum")
+        .required("name is required"),
+    street_name: Yup.string()
+        .min(3, "street_name must be 3 characters at minimum")
+        .required("street_name is required"),
+    email: Yup.string()
+        .email("Invalid email address format")
+        .required("Email is required"),
     products: Yup.array()
         .of(
             Yup.object().shape({
@@ -33,11 +44,19 @@ export const validateSchema = Yup.object().shape({
         .min(1, "Need at least a product")
 });
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+
+    }
+}));
+
 const ProductForm = () => {
     const [finalAmount, setFinalAmount] = useState(100)
     const [open, setOpen] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState('');
     const [isDataRequired, setIsDataRequired] = useState(false)
+
+    const classes = useStyles();
 
     const handleClick = () => {
         setOpen(true);
@@ -67,11 +86,15 @@ const ProductForm = () => {
         invoice_data
     } = useContext(InvoiceContext)
 
+    console.log(products);
+
+
     return (
         <Formik
-            initialValues={{ products }}
+            initialValues={{ name: "", street_name: "", email: "", products: products }}
             validationSchema={validateSchema}
             onSubmit={(values, { setSubmitting, setFieldError }) => {
+                setSubmitting(false);
                 axios
                     .post(process.env.RESTURL + '/api/invoices', {
                         invoiceNumber: invoice_data.invoice_number,
@@ -104,7 +127,45 @@ const ProductForm = () => {
         >
             {({ values, errors, touched, submitForm, isSubmitting, handleChange, setFieldValue }) => (
                 <Form>
-                    <table className="table">
+                    <Grid container spacing={6}>
+                        <Grid item lg={6} md={6} sm={12} xs={12}>
+                            <span className="d-none d-md-block">
+                                <h1>Billed To</h1>
+                            </span>
+                            <Field
+                                type="text"
+                                name='name'
+                                label="Customer name"
+                                placeholder={customer.name}
+                                component={TextField}
+                            />
+                            <br />
+                            <Field
+                                type="text"
+                                name='street_name'
+                                label="Street name"
+                                placeholder={customer.street_name}
+                                component={TextField}
+                            />
+                            <br />
+                            <Field
+                                type="email"
+                                name='email'
+                                label="email"
+                                placeholder={customer.email}
+                                component={TextField}
+                            />
+                            {/* <h5 className="mb-0 mt-3">{invoice_data.due_date}</h5> */}
+                        </Grid>
+                        <Grid item lg={6} md={6} sm={12} xs={12}>
+                            <CompanyInfo />
+                        </Grid>
+                        <Grid item lg={6} md={6} sm={12} xs={12}>
+
+                        </Grid>
+                    </Grid>
+
+                    <table>
                         <thead>
                             <tr>
                                 <th>Omschrijving</th>
@@ -218,7 +279,7 @@ const ProductForm = () => {
                         </tbody>
                     </table>
 
-                    <Typography variant="h5" component="h3">{invoice_data.notes}</Typography>
+                    <Typography variant="p" component="p">Wij verzoeken u vriendelijk om het openstaand bedrag van {finalAmount} voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder vermelding van het factuurnummer {invoice_data.invoice_number} ’. Voor vragen kunt u contact opnemen per e-mail of telefoon.</Typography>
 
                     <Divider light />
                     <Button

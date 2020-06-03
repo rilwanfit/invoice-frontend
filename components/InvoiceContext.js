@@ -2,6 +2,8 @@ import React, { createContext, useReducer } from 'react';
 
 export const InvoiceContext = createContext();
 
+const invoiceNumber = (new Date().getFullYear()) + '-' + '0000'
+
 const initialState = {
     company: {
         name: "Cocon Administratie & Advies",
@@ -25,13 +27,13 @@ const initialState = {
         }
     ],
     invoice_data: {
-        invoice_number: '#factuurnummer',
+        invoice_number: invoiceNumber,
         kvk_number: 'KVK123',
         vat_number: '1234',
         iban: 'ABA0123-232-12121',
         created_date: '14th June, 2020',
         due_date: '14th June, 2021',
-        notes: 'Wij verzoeken u vriendelijk om het openstaand bedrag van xxxx (retrieve from total at the bottom) voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder vermelding van het factuurnummer ‘xxxxx (retrieve from #factuurnummer)’. Voor vragen kunt u contact opnemen per e-mail of telefoon.'
+        notes: 'Wij verzoeken u vriendelijk om het openstaand bedrag van' +  +' voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder vermelding van het factuurnummer ‘xxxxx (retrieve from #factuurnummer)’. Voor vragen kunt u contact opnemen per e-mail of telefoon.'
     }
 }
 

@@ -8,11 +8,15 @@ const cookies = new Cookies();
 
 const initialState = {
     loading: false,
+<<<<<<< HEAD
     authenticated: cookies.get('token') ? true : false,
     token: cookies.get('token') || '',
     hasCompanyDetails: false,
     username: cookies.get('username') || '',
     userid: cookies.get('userid') || '',
+=======
+    authenticated: true
+>>>>>>> redesign the invoice form
 }
 
 const appReducer = (state, action) => {
