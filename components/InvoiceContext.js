@@ -1,4 +1,8 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, useEffect, useContext } from 'react';
+import axios from 'axios';
+
+import { ApplicationContext } from './ApplicationContext'
+import Router from 'next/dist/next-server/server/router';
 
 export const InvoiceContext = createContext();
 
@@ -12,6 +16,9 @@ const initialState = {
         phone_number: "+555 7 789-1234",
         email: "info@administratie.nl",
         website: "www.coconadministratie.nl",
+        kvk_number: 'KVK123',
+        vat_number: '1234',
+        provided: false
     },
     customer: {
         name: 'Casey Williams',
@@ -28,12 +35,9 @@ const initialState = {
     ],
     invoice_data: {
         invoice_number: invoiceNumber,
-        kvk_number: 'KVK123',
-        vat_number: '1234',
-        iban: 'ABA0123-232-12121',
         created_date: '14th June, 2020',
         due_date: '14th June, 2021',
-        notes: 'Wij verzoeken u vriendelijk om het openstaand bedrag van' +  +' voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder vermelding van het factuurnummer ‘xxxxx (retrieve from #factuurnummer)’. Voor vragen kunt u contact opnemen per e-mail of telefoon.'
+        notes: 'Wij verzoeken u vriendelijk om het openstaand bedrag van' + +' voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder vermelding van het factuurnummer ‘xxxxx (retrieve from #factuurnummer)’. Voor vragen kunt u contact opnemen per e-mail of telefoon.'
     }
 }
 
@@ -44,6 +48,16 @@ const invoiceReducer = (state, action) => {
                 ...state,
                 products: [...state.products, action.payload],
             }
+        case "UPDATE_COMPANY":
+            return {
+                ...state,
+                company: action.payload,
+            }
+        case "LOADING":
+            return {
+                ...state,
+                loading: action.payload,
+            }
         default:
             return state;
     }
@@ -51,9 +65,15 @@ const invoiceReducer = (state, action) => {
 
 export const InvoiceProvider = (props) => {
 
+    const {
+        authenticated,
+        userid,
+        token
+    } = useContext(ApplicationContext)
+
     const [state, dispatch] = useReducer(invoiceReducer, initialState)
 
-    const { company, customer, products, invoice_data } = state
+    const { company, customer, products, invoice_data, loading } = state
 
     const addProduct = products => {
         dispatch({
@@ -62,12 +82,30 @@ export const InvoiceProvider = (props) => {
         })
     }
 
+    const setLoading = (value) => {
+        dispatch({
+            type: "LOADING",
+            payload: value
+        })
+    }
+
+    const updateCompany = company => {
+        dispatch({
+            type: "UPDATE_COMPANY",
+            payload: company
+        })
+    }
+
     const providerValue = {
         company,
         customer,
         products,
         addProduct,
-        invoice_data
+        invoice_data,
+        updateCompany,
+        authenticated,
+        userid,
+        token
     };
 
     return (

@@ -78,7 +78,11 @@ const LoginForm = () => {
 
     useEffect(() => {
         if (authenticated) {
-            Router.push('/dashboard')
+            if (hasCompanyDetails) {
+                Router.push('/dashboard')
+            }
+            
+            Router.push('/company-info')
         }
     });
 
@@ -110,10 +114,10 @@ const LoginForm = () => {
                                         }
                                     })
                                     .then(response => {
-                                        cookies.set('username', response.data.username);
-                                        cookies.set('userid', response.data.userid);
+                                        cookies.set('username', response.data.username)
+                                        cookies.set('userid', response.data.userid)
                                         
-                                        setUsername(response.data.username, response.data.userid);
+                                        setUsername()
 
                                     }).catch(error => {
                                         console.log(error);

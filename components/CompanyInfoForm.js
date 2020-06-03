@@ -75,14 +75,11 @@ const useStyles = makeStyles((theme) => ({
 
 const companyDetails = { company_id: "", company_name: "", street_name: "", kvk_number: "", vat_number: "", bank_accont_number: "", email: "", phone: "" }
 
-const CompanyInfoForm = () => {
+const CompanyInfoForm = (props) => {
 
     const classes = useStyles();
-
     const {
-        login,
         authenticated,
-        hasCompanyDetails,
         userid,
         token
     } = useContext(ApplicationContext)
@@ -93,7 +90,7 @@ const CompanyInfoForm = () => {
         }
 
         axios
-            .get(process.env.RESTURL + '/api/users/' + cookies.get('userid'), {
+            .get(process.env.RESTURL + '/api/users/' + userid, {
                 headers: {
                     Authorization: 'Bearer ' + token
                 }
@@ -101,21 +98,19 @@ const CompanyInfoForm = () => {
             .then(response => {
 
                 const results = response.data.company
-
+                companyDetails.company_id = results.id
                 companyDetails.company_name = results.name
-                companyDetails.street_name = results.id
-                companyDetails.kvkNumber = results.kvkNumber
-                companyDetails.vatNumber = results.vatNumber
-                companyDetails.iban = results.iban
+                companyDetails.street_name = results.address
+                companyDetails.kvk_number = results.kvkNumber
+                companyDetails.vat_number = results.vatNumber
+                companyDetails.bank_accont_number = results.iban
                 companyDetails.email = results.email
                 companyDetails.phone = results.phone
 
             }).catch(error => {
-                console.log(error);
-
-            }).finally(() => {
+                console.error(error);
             });
-    });
+    }, []);
 
     return (
         <Container component="main" maxWidth="xs">
@@ -141,8 +136,10 @@ const CompanyInfoForm = () => {
                                 }
                             })
                             .then(response => {
-                                console.log(response)
-                                Router.push('/create-invoice')
+                                if (response.status === 200) {
+                                    props.handleClick()
+                                }
+                                
                             }).catch(error => {
                                 console.error(error);
                                 
@@ -174,7 +171,6 @@ const CompanyInfoForm = () => {
                                 label="Straat"
                                 name="street_name"
                                 autoComplete="street_name"
-                                autoFocus
                                 component={TextField}
                             />
 
