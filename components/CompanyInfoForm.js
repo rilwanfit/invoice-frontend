@@ -2,16 +2,11 @@ import React, { useContext, useEffect } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { TextField } from 'formik-material-ui';
 import Button from "@material-ui/core/Button";
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import * as Yup from 'yup';
@@ -38,19 +33,25 @@ function Copyright() {
 
 const vSchema = Yup.object().shape({
     company_name: Yup.string()
-        .required("Company name is required"),
+        .required("Bedrijfsnaam mag niet leeg zijn"),
     street_name: Yup.string()
-        .required("Street name is required"),
-    kvk_number: Yup.string()
-        .required("kvk nummber is required"),
-    vat_number: Yup.string()
-        .required("Company name is required"),
+        .required("Straat mag niet leeg zijn"),
+    kvk_number: Yup.number()
+        .required("kvk nummer mag niet leeg zijn")
+        .min(8, 'Voer een volledige kvk nummer in'),
+    vat_number: Yup.number()
+        .required("Company name is required")
+        .min(14,"Voer een geldige btw-nummer in"),
     bank_accont_number: Yup.string()
-        .required("Company name is required"),
+        .required("Company name is required")
+        .min(18,"Voer een geldige rekenningnummer in")
+        .max(34,"Voer een geldige rekenningnummer in"),
     email: Yup.string()
-        .required("Company name is required"),
+        .required("E-mail mag niet leeg zijn")
+        .email("Voer een geldige e-mailadres in"),
     phone: Yup.string()
-        .required("Company name is required"),
+        .required("Telefoon mag niet leeg zijn")
+        .min(10,"Voer een geldige  telefonnummer in")
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -156,7 +157,7 @@ const CompanyInfoForm = (props) => {
                                 required
                                 fullWidth
                                 id="company_name"
-                                label="Company name"
+                                label="Bedrijfsnaam"
                                 name="company_name"
                                 autoComplete="company_name"
                                 component={TextField}
