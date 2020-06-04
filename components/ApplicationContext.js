@@ -64,11 +64,6 @@ export const ApplicationProvider = (props) => {
 
     const { loading, authenticated, username, userid, token } = state;
 
-    console.log('userid');
-    console.log(userid);
-    console.log(authenticated);
-    
-
     const providerValue = {
         loading,
         authenticated,

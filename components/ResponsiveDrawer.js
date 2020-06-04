@@ -7,17 +7,22 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MenuList from '@material-ui/core/List';
-import MenuItem from '@material-ui/core/ListItem';
-import Button from '@material-ui/core/Button';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import CategoryIcon from '@material-ui/icons/Category';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DraftsIcon from '@material-ui/icons/Drafts';
+import PeopleIcon from '@material-ui/icons/People';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import ClassIcon from '@material-ui/icons/Class';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import { ApplicationContext } from './ApplicationContext'
@@ -59,8 +64,11 @@ function ResponsiveDrawer(props) {
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
-    const [openSettingsMenu, setOpenSettingsMenu] = React.useState(true);
-    const [openInvoiceMenu, setOpenInvoiceMenu] = React.useState(true);
+    const [openSettingsMenu, setOpenSettingsMenu] = React.useState(false);
+    const [openProductsMenu, setOpenProductssMenu] = React.useState(false);
+    const [openInvoiceMenu, setOpenInvoiceMenu] = React.useState(false);
+    const [openCategoryMenu, setOpenCategoryMenu] = React.useState(false);
+    const [openCustomerMenu, setOpenCustomerMenu] = React.useState(false);
 
     const handleSettingsMenuClick = () => {
         setOpenSettingsMenu(!openSettingsMenu);
@@ -68,6 +76,18 @@ function ResponsiveDrawer(props) {
 
     const handleInvoiceMenuClick = () => {
         setOpenInvoiceMenu(!openInvoiceMenu);
+    };
+
+    const handleProductsMenuClick = () => {
+        setOpenProductssMenu(!openProductsMenu);
+    };
+
+    const handleCategoryMenuClick = () => {
+        setOpenCategoryMenu(!openCategoryMenu);
+    };
+
+    const handleCustomerMenuClick = () => {
+        setOpenCustomerMenu(!openCustomerMenu);
     };
 
     const {
@@ -84,63 +104,152 @@ function ResponsiveDrawer(props) {
                 <div className={classes.toolbar} />
             </Hidden>
             <Divider />
-            <MenuList>
+            <List>
                 <Link href="/dashboard" passHref>
-                    <MenuItem button selected={router.pathname === "/dashboard"} >
-                        <Button variant="text" color="secondary" startIcon={<DashboardIcon />}>Dashboard</Button>
-                    </MenuItem>
+                    <ListItem button selected={router.pathname === "/dashboard"}>
+                        <ListItemIcon>
+                            <DashboardIcon color="primary" />
+                        </ListItemIcon>
+                        <ListItemText primary="Dashboard" className={classes} />
+                    </ListItem>
                 </Link>
-                <Link href="/invoice" passHref>
-                    <MenuItem button onClick={handleInvoiceMenuClick} selected={((router.pathname === "/invoice") ? true : false)} >
-                        <Button variant="text" color="secondary" startIcon={<DraftsIcon />}>Verzonden</Button>
-                        {openInvoiceMenu ? <ExpandLess /> : <ExpandMore />}
-                    </MenuItem>
-                </Link>
+
+                <ListItem button onClick={handleInvoiceMenuClick}>
+                    <ListItemIcon>
+                        <DraftsIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Verzonden" />
+                    {openInvoiceMenu ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
                 <Collapse in={openInvoiceMenu} timeout="auto" unmountOnExit>
-                    <MenuList className={classes.nested}>
+                    <List component="div" disablePadding>
                         <Link href="/create-invoice" passHref>
-                            <MenuItem selected={((router.pathname === "/create-invoice") ? true : false)} >
-                                <Button variant="text" component="a" startIcon={<SettingsIcon />}> Create Invoice</Button>
-                            </MenuItem>
+                            <ListItem button selected={router.pathname === "/create-invoice"} className={classes.nested}>
+                                <ListItemIcon>
+                                    <InboxIcon color="primary" />
+                                </ListItemIcon>
+                                <ListItemText primary="Create Invoice" />
+                            </ListItem>
                         </Link>
-                    </MenuList>
+                    </List>
                 </Collapse>
-                <Link href="/outgoing-invoice" passHref>
-                    <MenuItem button selected={((router.pathname === "/outgoing-invoice") ? true : false)} >
-                        <Button variant="text" component="a" startIcon={<InboxIcon />}> Ontvangen facturen </Button>
-                    </MenuItem>
-                </Link>
-                <Link href="/product" passHref>
-                    <MenuItem button selected={((router.pathname === "/product") ? true : false)} >
-                        <Button variant="text" component="a" startIcon={<DashboardIcon />}>Product</Button>
-                    </MenuItem>
-                </Link>
-                <Link href="/category" passHref>
-                    <MenuItem button selected={((router.pathname === "/category") ? true : false)} >
-                        <Button variant="text" component="a" startIcon={<CategoryIcon />}>Category </Button>
-                    </MenuItem>
-                </Link>
-                <Link href="/settings" passHref>
-                    <MenuItem onClick={handleSettingsMenuClick} button selected={((router.pathname === "/settings") ? true : false)} >
-                        <Button variant="text" component="a" startIcon={<SettingsIcon />}> Instellingen</Button>
-                        {openSettingsMenu ? <ExpandLess /> : <ExpandMore />}
-                    </MenuItem>
-                </Link>
+
+                <ListItem button>
+                    <ListItemIcon>
+                        <DraftsIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Ontvangen facturen" />
+                    {openInvoiceMenu ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openInvoiceMenu} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <Link href="/outgoing-invoice" passHref>
+                            <ListItem button selected={router.pathname === "/outgoing-invoice"} className={classes.nested}>
+                                <ListItemIcon>
+                                    <InboxIcon color="primary" />
+                                </ListItemIcon>
+                                <ListItemText primary="Create Invoice" />
+                            </ListItem>
+                        </Link>
+                    </List>
+                </Collapse>
+
+                <ListItem button onClick={handleCustomerMenuClick}>
+                    <ListItemIcon>
+                        <PeopleIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Customer" />
+                    {openCustomerMenu ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openCustomerMenu} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <Link href="/customer-overview" passHref>
+                            <ListItem button selected={router.pathname === "/customer-overview"} className={classes.nested}>
+                                <ListItemIcon>
+                                    <ViewListIcon color="primary" />
+                                </ListItemIcon>
+                                <ListItemText primary="Customeroverzicht" />
+                            </ListItem>
+                        </Link>
+                        <Link href="/customer-overview" passHref>
+                            <ListItem button selected={router.pathname === "/customer-overview"} className={classes.nested}>
+                                <ListItemIcon>
+                                    <PersonAddIcon color="primary" />
+                                </ListItemIcon>
+                                <ListItemText primary="Add customer" />
+                            </ListItem>
+                        </Link>
+                    </List>
+                </Collapse>
+
+                <ListItem button onClick={handleProductsMenuClick}>
+                    <ListItemIcon>
+                        <ClassIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Producten" />
+                    {openProductsMenu ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openProductsMenu} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <Link href="/product-overview" passHref>
+                            <ListItem button selected={router.pathname === "/product-overview"} className={classes.nested}>
+                                <ListItemIcon>
+                                    <ViewListIcon color="primary" />
+                                </ListItemIcon>
+                                <ListItemText primary="Productoverzicht" />
+                            </ListItem>
+                        </Link>
+                    </List>
+                </Collapse>
+
+                <ListItem button onClick={handleCategoryMenuClick}>
+                    <ListItemIcon>
+                        <CategoryIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Categorie" />
+                    {openCategoryMenu ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openCategoryMenu} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <Link href="/category-overview" passHref>
+                            <ListItem button selected={router.pathname === "/category-overview"} className={classes.nested}>
+                                <ListItemIcon>
+                                    <ViewListIcon color="primary" />
+                                </ListItemIcon>
+                                <ListItemText primary="Categorieoverzicht" />
+                            </ListItem>
+                        </Link>
+                    </List>
+                </Collapse>
+
+                <ListItem button onClick={handleSettingsMenuClick}>
+                    <ListItemIcon>
+                        <SettingsIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Instellingen" />
+                    {openSettingsMenu ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
                 <Collapse in={openSettingsMenu} timeout="auto" unmountOnExit>
-                    <MenuList className={classes.nested}>
+                    <List component="div" disablePadding>
                         <Link href="/company-info" passHref>
-                            <MenuItem selected={((router.pathname === "/company-info") ? true : false)} >
-                                <Button variant="text" component="a" startIcon={<SettingsIcon />}> Company Info</Button>
-                            </MenuItem>
+                            <ListItem button selected={router.pathname === "/company-info"} className={classes.nested}>
+                                <ListItemIcon>
+                                    <CategoryIcon color="primary" />
+                                </ListItemIcon>
+                                <ListItemText primary="Company Info" />
+                            </ListItem>
                         </Link>
                         <Link href="/vat-tariffs" passHref>
-                            <MenuItem selected={((router.pathname === "/vat-tariffs") ? true : false)} >
-                                <Button variant="text" component="a" startIcon={<SettingsIcon />}> Vat tariffs</Button>
-                            </MenuItem>
+                            <ListItem button selected={router.pathname === "/company-info"} className={classes.nested}>
+                                <ListItemIcon>
+                                    <CategoryIcon color="primary" />
+                                </ListItemIcon>
+                                <ListItemText primary="Vat tariffs" />
+                            </ListItem>
                         </Link>
-                    </MenuList>
+                    </List>
                 </Collapse>
-            </MenuList >
+            </List>
             <Divider />
         </div >
     );

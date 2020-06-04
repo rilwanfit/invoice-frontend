@@ -29,6 +29,8 @@
     "formik": "^2.1.4",
     "formik-material-ui": "^2.0.0-beta.1",
     "formik-material-ui-pickers": "0.0.8",
+    "material-table": "^1.59.0",
+    "material-table-formik": "^0.1.10",
     "next": "^9.4.1",
     "prop-types": "latest",
     "react": "^16.13.1",
