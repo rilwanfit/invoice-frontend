@@ -53,6 +53,11 @@ const invoiceReducer = (state, action) => {
                 ...state,
                 company: action.payload,
             }
+        case "UPDATE_CUSTOMER":
+            return {
+                ...state,
+                customer: action.payload,
+            }
         case "LOADING":
             return {
                 ...state,
@@ -96,6 +101,13 @@ export const InvoiceProvider = (props) => {
         })
     }
 
+    const updateCustomer = customer => {
+        dispatch({
+            type: "UPDATE_CUSTOMER",
+            payload: customer
+        })
+    }
+
     const providerValue = {
         company,
         customer,
@@ -103,6 +115,7 @@ export const InvoiceProvider = (props) => {
         addProduct,
         invoice_data,
         updateCompany,
+        updateCustomer,
         authenticated,
         userid,
         token

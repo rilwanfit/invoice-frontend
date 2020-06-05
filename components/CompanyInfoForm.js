@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Grid from '@material-ui/core/Grid';
 
 import * as Yup from 'yup';
 import { Cookies } from 'react-cookie';
@@ -174,6 +175,40 @@ const CompanyInfoForm = (props) => {
                                 autoComplete="street_name"
                                 component={TextField}
                             />
+                            <Grid item xs={12} sm={6}>
+                            <Field
+                                type="text"
+                                name='postCode'
+                                label="Post code"
+                                placeholder='name'
+                                component={TextField}
+                                fullWidth
+                                autoComplete="firstName"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Field
+                                type="text"
+                                name='city'
+                                label="Plaat"
+                                placeholder='name'
+                                component={TextField}
+                                fullWidth
+                                autoComplete="lastName"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Field
+                                type="text"
+                                name='country'
+                                label="country"
+                                placeholder='name'
+                                component={TextField}
+                                fullWidth
+                                fullWidth
+                                autoComplete="country"
+                            />
+                        </Grid>
 
                             <Field
                                 variant="outlined"

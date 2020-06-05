@@ -30,7 +30,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 const TableWithNoBorderCell = withStyles({
@@ -41,6 +40,8 @@ const TableWithNoBorderCell = withStyles({
 
 import { InvoiceContext } from './InvoiceContext';
 import RequiredCompanyInfoDialog from './Dialog/RequiredCompanyInfoDialog';
+import CustomerSearchField from './Form/CustomerSearchField';
+
 
 import { Cookies } from 'react-cookie';
 const cookies = new Cookies();
@@ -116,6 +117,7 @@ const InvoiceForm = (props) => {
         customer,
         company,
         updateCompany,
+        updateCustomer,
         invoice_data,
         userid,
         token
@@ -177,14 +179,6 @@ const InvoiceForm = (props) => {
             });
     }, []);
 
-    // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-    const top100Films = [
-        { title: 'The Shawshank Redemption', year: 1994 },
-        { title: 'The Godfather', year: 1972 },
-        { title: 'The Godfather: Part II', year: 1974 },
-        { title: 'The Dark Knight', year: 2008 },
-    ];
-
     return (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <RequiredCompanyInfoDialog handleClose={setHasCompanyAlert} open={hasCompanyAlert} />
@@ -227,23 +221,29 @@ const InvoiceForm = (props) => {
                     <Form>
                         <Grid container spacing={6} justify="space-between">
                             <Grid item md={6}>
-                                {/* <Autocomplete
-                                    id="combo-box-demo"
-                                    options={top100Films}
-                                    getOptionLabel={(option) => option.title}
-                                    style={{ width: 300 }}
-                                    renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
-                                /> */}
+
+                                <CustomerSearchField updateCustomer={updateCustomer} />
+                                
+                                <h4 className="mb-0">{customer.name}</h4>
+                                {customer.street_name}<br />
+                                {customer.postal_address}<br />
+                                {customer.email}<br />
+                                <br />
+                                <br />
+            Factuurnummer: {invoice_data.invoice_number} <br />
+            Factuurdatum: {'10th June, 2021'}<br />
+            Vervaldatum: {'14th June, 2021'}<br />
+                                {/* Vervaldatum: {invoice_data.due_date}<br /> */}
                             </Grid>
                             <Grid item md={6} >
                                 <img className="logo img-fluid mb-3" src="https://docamatic.s3-eu-west-1.amazonaws.com/assets/360_logo.png" style={{ maxHeight: '140px' }} />
                                 <br />
                                 <h2 className="mb-1">{company.name}</h2>
+                                {company.address}<br />
                                 {company.website}  / {company.phone_number}<br />
                                 <strong>{company.email}</strong>
                                 <br />
                                 <br />
-                                <h3>Verkoopfactuur {invoice_data.invoice_number}</h3>
                         KVK-nummer: {company.kvk_number}<br />
                         BTW-nummer: {company.vat_number}<br />
                         IBAN: {company.iban}<br />
