@@ -38,9 +38,9 @@ const TableWithNoBorderCell = withStyles({
     }
 })(TableCell);
 
-import { InvoiceContext } from './InvoiceContext';
-import RequiredCompanyInfoDialog from './Dialog/RequiredCompanyInfoDialog';
-import CustomerSearchField from './Form/CustomerSearchField';
+import { InvoiceContext } from '../InvoiceContext';
+import RequiredCompanyInfoDialog from '../Dialog/RequiredCompanyInfoDialog';
+import CustomerSearchField from './CustomerSearchField';
 
 
 import { Cookies } from 'react-cookie';

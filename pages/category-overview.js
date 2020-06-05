@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Router from 'next/router'
 import { ApplicationContext } from '../components/ApplicationContext'
-import CategoryTable from '../components/CategoryTable';
+import CategoryTable from '../components/Table/CategoryTable';
 
 const useStyles = makeStyles((theme) => ({
     root: {

@@ -5,26 +5,17 @@ import { Formik, Field, Form, ErrorMessage, FieldArray, useField, useFormikConte
 import { TextField, Select } from 'formik-material-ui';
 import * as Yup from 'yup';
 import axios from 'axios';
-import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
 import LinearProgress from "@material-ui/core/LinearProgress";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import MuiAlert from '@material-ui/lab/Alert';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 
 import DateFnsUtils from '@date-io/date-fns';
 
-import { InvoiceContext } from './InvoiceContext';
+import { InvoiceContext } from '../InvoiceContext';
 
 import { Cookies } from 'react-cookie';
 const cookies = new Cookies();
@@ -44,11 +35,9 @@ export const validateSchema = Yup.object().shape({
         .email("Invalid email address format")
         .required("Email is required"),
     postCode: Yup.string()
-        .min(6, 'Voer een geldige postcode in')
-        .max(6, 'Voer een geldige postcode in')
         .required("Voer je postcode in"),
     city: Yup.string()
-        .required(' voer uw volledige adres in')
+        .required('Voer uw volledige adres in')
 
 });
 
@@ -98,26 +87,7 @@ const CustomerForm = (props) => {
         >
             {({ values, errors, touched, submitForm, handleChange, setFieldValue }) => (
                 <Form>
-                    {/* <Grid container spacing={6}>
-                            <Grid item lg={6} md={6} sm={12} xs={12}>
-                                
-                                <Field
-                                    type="text"
-                                    name='name'
-                                    label="Naam ontvanger"
-                                    placeholder='name'
-                                    component={TextField}
-                                />
-                            </Grid>
-                        </Grid>
-                        
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="button"
-                            onClick={submitForm}
-                        >Submit</Button>
-                        
+                    {/* 
                         {isSubmitting && <LinearProgress />} */}
                     <Grid container spacing={1}>
                         <Grid item xs={12}>
@@ -209,10 +179,12 @@ const CustomerForm = (props) => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <FormControlLabel
-                                control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
-                                label="Use this address for payment details"
-                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                type="button"
+                                onClick={submitForm}
+                            >Add Customer</Button>
                         </Grid>
                     </Grid>
                 </Form>

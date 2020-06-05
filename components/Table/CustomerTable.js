@@ -18,7 +18,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import CreateCustomerDialog from './Dialog/CreateCustomerDialog';
+import CreateCustomerDialog from '../Dialog/CreateCustomerDialog';
 
 const useStyles = makeStyles((theme) => ({
     toolbar: {

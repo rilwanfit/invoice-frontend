@@ -8,7 +8,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import Router from 'next/router'
 import { ApplicationContext } from '../components/ApplicationContext'
-import CompanyInfoForm from '../components/CompanyInfoForm'
+import CompanyInfoForm from '../components/Form/CompanyInfoForm'
 
 const useStyles = makeStyles((theme) => ({
     paper: {

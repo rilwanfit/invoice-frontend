@@ -19,7 +19,7 @@ import { Cookies } from 'react-cookie';
 import axios from 'axios';
 import Router from 'next/router'
 
-import { ApplicationContext } from './ApplicationContext'
+import { ApplicationContext } from '../ApplicationContext'
 
 const cookies = new Cookies();
 

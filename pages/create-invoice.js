@@ -7,7 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
 import { InvoiceProvider } from '../components/InvoiceContext';
-import InvoiceForm from '../components/InvoiceForm';
+import InvoiceForm from '../components/Form/InvoiceForm';
 
 const useStyles = makeStyles((theme) => ({
     root: {

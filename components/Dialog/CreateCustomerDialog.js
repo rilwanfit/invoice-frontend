@@ -6,7 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import CustomerForm from '../CustomerForm';
+import CustomerForm from '../Form/CustomerForm';
 
 export default function CreateCustomerDialog(props) {
   return (
@@ -20,14 +20,6 @@ export default function CreateCustomerDialog(props) {
           </DialogContentText>
           <CustomerForm />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={props.handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={props.handleClose} color="primary">
-            Subscribe
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   );

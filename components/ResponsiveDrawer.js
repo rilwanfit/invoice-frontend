@@ -66,29 +66,16 @@ function ResponsiveDrawer(props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
     const [openSettingsMenu, setOpenSettingsMenu] = React.useState(false);
-    const [openProductsMenu, setOpenProductssMenu] = React.useState(false);
     const [openInvoiceMenu, setOpenInvoiceMenu] = React.useState(false);
-    const [openCategoryMenu, setOpenCategoryMenu] = React.useState(false);
-    const [openCustomerMenu, setOpenCustomerMenu] = React.useState(false);
 
     const handleSettingsMenuClick = () => {
         setOpenSettingsMenu(!openSettingsMenu);
+        setOpenInvoiceMenu(false)
     };
 
     const handleInvoiceMenuClick = () => {
         setOpenInvoiceMenu(!openInvoiceMenu);
-    };
-
-    const handleProductsMenuClick = () => {
-        setOpenProductssMenu(!openProductsMenu);
-    };
-
-    const handleCategoryMenuClick = () => {
-        setOpenCategoryMenu(!openCategoryMenu);
-    };
-
-    const handleCustomerMenuClick = () => {
-        setOpenCustomerMenu(!openCustomerMenu);
+        setOpenSettingsMenu(false);
     };
 
     const {
@@ -135,93 +122,45 @@ function ResponsiveDrawer(props) {
                     </List>
                 </Collapse>
 
-                <ListItem button>
-                    <ListItemIcon>
-                        <DraftsIcon color="primary" />
-                    </ListItemIcon>
-                    <ListItemText primary="Ontvangen facturen" />
-                    {openInvoiceMenu ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={openInvoiceMenu} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <Link href="/outgoing-invoice" passHref>
-                            <ListItem button selected={router.pathname === "/outgoing-invoice"} className={classes.nested}>
-                                <ListItemIcon>
-                                    <InboxIcon color="primary" />
-                                </ListItemIcon>
-                                <ListItemText primary="Create Invoice" />
-                            </ListItem>
-                        </Link>
-                    </List>
-                </Collapse>
+                <List component="div" disablePadding>
+                    <Link href="/outgoing-invoice" passHref>
+                        <ListItem button selected={router.pathname === "/outgoing-invoice"} >
+                            <ListItemIcon>
+                                <InboxIcon color="primary" />
+                            </ListItemIcon>
+                            <ListItemText primary="Create Invoice" />
+                        </ListItem>
+                    </Link>
+                </List>
 
-                <ListItem button onClick={handleCustomerMenuClick}>
-                    <ListItemIcon>
-                        <PeopleIcon color="primary" />
-                    </ListItemIcon>
-                    <ListItemText primary="Customer" />
-                    {openCustomerMenu ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={openCustomerMenu} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <Link href="/customer-overview" passHref>
-                            <ListItem button selected={router.pathname === "/customer-overview"} className={classes.nested}>
-                                <ListItemIcon>
-                                    <ViewListIcon color="primary" />
-                                </ListItemIcon>
-                                <ListItemText primary="Customeroverzicht" />
-                            </ListItem>
-                        </Link>
-                        <Link href="/customer-overview" passHref>
-                            <ListItem button selected={router.pathname === "/customer-overview"} className={classes.nested}>
-                                <ListItemIcon>
-                                    <PersonAddIcon color="primary" />
-                                </ListItemIcon>
-                                <ListItemText primary="Add customer" />
-                            </ListItem>
-                        </Link>
-                    </List>
-                </Collapse>
+                <Link href="/customer-overview" passHref>
+                    <ListItem button selected={router.pathname === "/customer-overview"}>
+                        <ListItemIcon>
+                            <ViewListIcon color="primary" />
+                        </ListItemIcon>
+                        <ListItemText primary="Customeroverzicht" />
+                    </ListItem>
+                </Link>
 
-                <ListItem button onClick={handleProductsMenuClick}>
-                    <ListItemIcon>
-                        <ClassIcon color="primary" />
-                    </ListItemIcon>
-                    <ListItemText primary="Producten" />
-                    {openProductsMenu ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={openProductsMenu} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <Link href="/product-overview" passHref>
-                            <ListItem button selected={router.pathname === "/product-overview"} className={classes.nested}>
-                                <ListItemIcon>
-                                    <ViewListIcon color="primary" />
-                                </ListItemIcon>
-                                <ListItemText primary="Productoverzicht" />
-                            </ListItem>
-                        </Link>
-                    </List>
-                </Collapse>
+                <List component="div" disablePadding>
+                    <Link href="/product-overview" passHref>
+                        <ListItem button selected={router.pathname === "/product-overview"} >
+                            <ListItemIcon>
+                                <ViewListIcon color="primary" />
+                            </ListItemIcon>
+                            <ListItemText primary="Productoverzicht" />
+                        </ListItem>
+                    </Link>
+                </List>
 
-                <ListItem button onClick={handleCategoryMenuClick}>
-                    <ListItemIcon>
-                        <CategoryIcon color="primary" />
-                    </ListItemIcon>
-                    <ListItemText primary="Categorie" />
-                    {openCategoryMenu ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={openCategoryMenu} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <Link href="/category-overview" passHref>
-                            <ListItem button selected={router.pathname === "/category-overview"} className={classes.nested}>
-                                <ListItemIcon>
-                                    <ViewListIcon color="primary" />
-                                </ListItemIcon>
-                                <ListItemText primary="Categorieoverzicht" />
-                            </ListItem>
-                        </Link>
-                    </List>
-                </Collapse>
+                <Link href="/category-overview" passHref>
+                    <ListItem button selected={router.pathname === "/category-overview"} >
+                        <ListItemIcon>
+                            <ViewListIcon color="primary" />
+                        </ListItemIcon>
+                        <ListItemText primary="Categorieoverzicht" />
+                    </ListItem>
+                </Link>
 
                 <ListItem button onClick={handleSettingsMenuClick}>
                     <ListItemIcon>

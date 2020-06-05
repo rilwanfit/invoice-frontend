@@ -41,11 +41,14 @@ const CustomerSearchField = (props) => {
         <>
             <CreateCustomerDialog handleClose={handleClose} open={open} />
             <Autocomplete
-                id="combo-box-demo"
+                clearOnBlur
                 options={top100Films}
                 onChange={(event, customer) => {
-                    if (customer.name.startsWith('+ Add')) {
+                    
+                    if (customer != null && customer.name.startsWith('+ Add')) {
                         setOpen(true);
+                    } else if (customer == null) {
+                        props.updateCustomer({})
                     } else {
                         props.updateCustomer(customer)
                     }
