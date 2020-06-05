@@ -4,6 +4,8 @@ import { TextField } from 'formik-material-ui';
 import { makeStyles } from '@material-ui/core/styles';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
+import CreateCustomerDialog from '../Dialog/CreateCustomerDialog';
+
 const filter = createFilterOptions();
 
 const useStyles = makeStyles((theme) => ({
@@ -13,6 +15,13 @@ const useStyles = makeStyles((theme) => ({
 
 const CustomerSearchField = (props) => {
     const classes = useStyles();
+
+    const [open, setOpen] = React.useState(false);
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
+
     // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
     const top100Films = [
         {
@@ -29,45 +38,46 @@ const CustomerSearchField = (props) => {
         }
     ];
     return (
-        <Autocomplete
-            id="combo-box-demo"
-            options={top100Films}
-            onChange={(event, customer) => {
-                if (customer.name.startsWith('+ Add')) {
+        <>
+            <CreateCustomerDialog handleClose={handleClose} open={open} />
+            <Autocomplete
+                id="combo-box-demo"
+                options={top100Films}
+                onChange={(event, customer) => {
+                    if (customer.name.startsWith('+ Add')) {
+                        setOpen(true);
+                    } else {
+                        props.updateCustomer(customer)
+                    }
+                }}
+                filterOptions={(options, params) => {
+                    const filtered = filter(options, params);
 
-                    console.log('sads');
-                     
-                } else {
-                    props.updateCustomer(customer)
-                }
-            }}
-            filterOptions={(options, params) => {
-                const filtered = filter(options, params);
+                    // Suggest the creation of a new value
+                    if (params.inputValue !== '') {
+                        filtered.push({
+                            inputValue: params.inputValue,
+                            name: `+ Add "${params.inputValue}"`,
+                        });
+                    }
 
-                // Suggest the creation of a new value
-                if (params.inputValue !== '') {
-                    filtered.push({
-                        inputValue: params.inputValue,
-                        name: `+ Add "${params.inputValue}"`,
-                    });
+                    return filtered;
+                }}
+                getOptionLabel={(option) => {
+                    // Add "xxx" option created dynamically
+                    if (option.inputValue) {
+                        return option.inputValue;
+                    }
+                    return option.name
                 }
-
-                return filtered;
-            }}
-            getOptionLabel={(option) => {
-                // Add "xxx" option created dynamically
-                if (option.inputValue) {
-                    return option.inputValue;
                 }
-                return option.name
-            }
-            }
-            style={{ width: 300 }}
-            renderInput={(params) => (
-                <Field component={TextField} {...params} name="customer" label="Selectustomer" fullWidth />
-            )}
-            renderOption={(option) => option.name}
-        />
+                style={{ width: 300 }}
+                renderInput={(params) => (
+                    <Field component={TextField} {...params} name="customer" label="Select customer" fullWidth />
+                )}
+                renderOption={(option) => option.name}
+            />
+        </>
     )
 }
 
