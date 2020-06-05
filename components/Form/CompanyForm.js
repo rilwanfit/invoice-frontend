@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
 
 const companyDetails = { company_id: "", company_name: "", street_name: "", kvk_number: "", vat_number: "", bank_accont_number: "", email: "", phone: "" }
 
-const CompanyInfoForm = (props) => {
+const CompanyForm = (props) => {
 
     const classes = useStyles();
     const {
@@ -292,4 +292,4 @@ const CompanyInfoForm = (props) => {
     );
 }
 
-export default CompanyInfoForm;
+export default CompanyForm;
