@@ -1,31 +1,46 @@
 import React, { useContext, useState, Fragment, useEffect } from 'react'
 import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Formik, Field, Form, ErrorMessage, FieldArray, useField, useFormikContext } from "formik";
 import { TextField, Select } from 'formik-material-ui';
 import * as Yup from 'yup';
 import axios from 'axios';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import LinearProgress from "@material-ui/core/LinearProgress";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import MuiAlert from '@material-ui/lab/Alert';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import {
-    DatePicker
-} from 'formik-material-ui-pickers';
+import Fab from '@material-ui/core/Fab';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+
+const TableWithNoBorderCell = withStyles({
+    root: {
+        borderBottom: "none"
+    }
+})(TableCell);
+
 import { InvoiceContext } from './InvoiceContext';
+import RequiredCompanyInfoDialog from './Dialog/RequiredCompanyInfoDialog';
 
 import { Cookies } from 'react-cookie';
 const cookies = new Cookies();
@@ -35,15 +50,6 @@ function Alert(props) {
 }
 
 export const validateSchema = Yup.object().shape({
-    name: Yup.string()
-        .min(3, "name must be 3 characters at minimum")
-        .required("name is required"),
-    street_name: Yup.string()
-        .min(3, "street_name must be 3 characters at minimum")
-        .required("street_name is required"),
-    email: Yup.string()
-        .email("Invalid email address format")
-        .required("Email is required"),
     products: Yup.array()
         .of(
             Yup.object().shape({
@@ -52,20 +58,45 @@ export const validateSchema = Yup.object().shape({
             })
         )
         .min(1, "Need at least a product"),
-    postal: Yup.string()
-        .min(6, 'Voer een geldige postcode in')
-        .max(6, 'Voer een geldige postcode in')
-        .required("Voer je postcode in"),
-    city: Yup.string()
-        .required(' voer uw volledige adres in')
-
 });
+
+const TAX_RATE = 0.07;
+
+function ccyFormat(num) {
+    return '€ ' + `${num.toFixed(2)}`;
+}
+
+function priceRow(qty, unit) {
+    return qty * unit;
+}
+
+function createRow(desc, qty, unit) {
+    const price = priceRow(qty, unit);
+    return { desc, qty, unit, price };
+}
+
+function subtotal(items) {
+    return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
+}
+
+const rows = [
+    createRow('Paperclips (Box)', 100, 1.15),
+    createRow('Paper (Case)', 10, 45.99),
+    createRow('Waste Basket', 2, 17.99),
+];
+
+const invoiceSubtotal = subtotal(rows);
+const invoiceTaxes = TAX_RATE * invoiceSubtotal;
+const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
 const useStyles = makeStyles((theme) => ({
     root: {
 
     },
-    mediaQuery: theme.breakpoints.down('sm')
+    mediaQuery: theme.breakpoints.down('sm'),
+    table: {
+        minWidth: 700,
+    }
 }));
 
 const InvoiceForm = (props) => {
@@ -111,7 +142,6 @@ const InvoiceForm = (props) => {
         setFinalAmount(total)
     }
 
-
     useEffect(() => {
         axios
             .get(process.env.RESTURL + '/api/users/' + userid, {
@@ -147,11 +177,17 @@ const InvoiceForm = (props) => {
             });
     }, []);
 
-
-    
+    // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
+    const top100Films = [
+        { title: 'The Shawshank Redemption', year: 1994 },
+        { title: 'The Godfather', year: 1972 },
+        { title: 'The Godfather: Part II', year: 1974 },
+        { title: 'The Dark Knight', year: 2008 },
+    ];
 
     return (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <RequiredCompanyInfoDialog handleClose={setHasCompanyAlert} open={hasCompanyAlert} />
             <Formik
                 initialValues={{ name: "", street_name: "", email: "", postal: "", city: "", invoice_date: "", products: products }}
                 validationSchema={validateSchema}
@@ -189,81 +225,17 @@ const InvoiceForm = (props) => {
             >
                 {({ values, errors, touched, submitForm, isSubmitting, handleChange, setFieldValue }) => (
                     <Form>
-                        <Grid container spacing={6}>
-                            <Grid item lg={6} md={6} sm={12} xs={12}>
-                                <span className="d-none d-md-block">
-                                    <h1>Billed To</h1>
-                                </span>
-                                <Field
-                                    type="text"
-                                    name='name'
-                                    label="Naam ontvanger"
-                                    placeholder={customer.name}
-                                    component={TextField}
-                                />
-                                <br />
-                                <Field
-                                    type="text"
-                                    name='street_name'
-                                    label="Straat"
-                                    placeholder={customer.street_name}
-                                    component={TextField}
-                                />
-                                <br />
-
-                                <Grid container spacing={4}>
-                                    <Grid item xs={4}>
-                                        <Field
-                                            type="text"
-                                            name='postal'
-                                            label="Postcode"
-                                            placeholder={customer.postal}
-                                            component={TextField}
-                                        />
-                                        <br />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Field
-                                            type="text"
-                                            name='city'
-                                            label="Stad"
-                                            placeholder={customer.city}
-                                            component={TextField}
-                                        />
-                                        <br />
-                                    </Grid>
-
-
-                                </Grid>
-                                <Field
-                                    type="email"
-                                    name='email'
-                                    label="E-mailadres"
-                                    placeholder={customer.email}
-                                    component={TextField}
-                                />
-                                {/* <h5 className="mb-0 mt-3">{invoice_data.due_date}</h5> */}
+                        <Grid container spacing={6} justify="space-between">
+                            <Grid item md={6}>
+                                {/* <Autocomplete
+                                    id="combo-box-demo"
+                                    options={top100Films}
+                                    getOptionLabel={(option) => option.title}
+                                    style={{ width: 300 }}
+                                    renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
+                                /> */}
                             </Grid>
-                            <Grid item lg={6} md={6} sm={12} xs={12}>
-
-                                <Dialog
-                                    fullScreen={fullScreen}
-                                    open={hasCompanyAlert}
-                                    aria-labelledby="responsive-dialog-title"
-                                >
-                                    <DialogTitle id="responsive-dialog-title">{"Company details required"}</DialogTitle>
-                                    <DialogContent>
-                                        <DialogContentText>
-                                            Please provide company details before create an invoice.
-          </DialogContentText>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button variant="contained" color="primary" autoFocus href="/company-info">
-                                            Agree, Create company details
-          </Button>
-                                    </DialogActions>
-                                </Dialog>
-
+                            <Grid item md={6} >
                                 <img className="logo img-fluid mb-3" src="https://docamatic.s3-eu-west-1.amazonaws.com/assets/360_logo.png" style={{ maxHeight: '140px' }} />
                                 <br />
                                 <h2 className="mb-1">{company.name}</h2>
@@ -276,151 +248,171 @@ const InvoiceForm = (props) => {
                         BTW-nummer: {company.vat_number}<br />
                         IBAN: {company.iban}<br />
                             </Grid>
-                            <Grid item lg={6} md={6} sm={12} xs={12}>
-                                <Grid container spacing={4}>
-                                    <Grid item xs={4}>
-                                        <span className="d-none d-md-block">
-                                            <h4>Factuur datum</h4>
-                                        </span>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Field
-                                            component={DatePicker}
-                                            name="invoice_date"
-                                            label="Verzend datum"
-                                        />
-                                    </Grid>
-                                </Grid>
+                            <Grid item spacing={3}>
+                                <TableContainer component={Paper}>
+                                    <Table className={classes.table} aria-label="spanning table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell style={{ width: '30rem' }}>Omschrijving</TableCell>
+                                                <TableCell align="right">Aantal.</TableCell>
+                                                <TableCell align="right">Tarief</TableCell>
+                                                <TableCell align="right">Btw</TableCell>
+                                                <TableCell align="right">Totaal</TableCell>
+                                                <TableCell align="right">Actie</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {/* {rows.map((row) => (
+                                                <TableRow key={row.desc}>
+                                                    <TableCell>{row.desc}</TableCell>
+                                                    <TableCell align="right">{row.qty}</TableCell>
+                                                    <TableCell align="right">{row.unit}</TableCell>
+                                                    <TableCell align="right">{ccyFormat(row.price)}</TableCell>
+                                                </TableRow>
+                                            ))} */}
+                                            <FieldArray name="products">
+                                                {({ insert, remove, push }) => (
+                                                    <Fragment>
+                                                        {values.products.length > 0 &&
+                                                            values.products.map((product, index) => (
+                                                                <TableRow key={index}>
+                                                                    <TableWithNoBorderCell scope="row">
+                                                                        <Field
+                                                                            name={`products.${index}.name`}
+                                                                            placeholder="Ex: Pursuit Running Shoes"
+                                                                            component={TextareaAutosize}
+                                                                            rowsMin={1}
+                                                                            style={{ minWidth: 350, borderTop: 'none', borderRight: 'none', borderLeft: 'none', padding: 10 }}
+                                                                            onKeyUp={e => {
+                                                                                handleChange(e);
+                                                                                products[index].name = e.target.value
+                                                                            }}
+                                                                        />
+                                                                    </TableWithNoBorderCell>
+                                                                    <TableWithNoBorderCell align="right">
+                                                                        <Field
+                                                                            type="number"
+                                                                            name={`products.${index}.quantity`}
+                                                                            placeholder="Enter quantity"
+                                                                            style={{ width: 50 }}
+                                                                            component={TextField}
+                                                                            onKeyUp={e => {
+                                                                                handleChange(e);
+                                                                                product.total = product.price
+                                                                                    ? e.target.value * product.price
+                                                                                    : 0;
+
+                                                                                finalTotalHandler(values)
+                                                                            }}
+                                                                            min="1" max="999"
+                                                                        />
+                                                                    </TableWithNoBorderCell>
+                                                                    <TableWithNoBorderCell align="right">
+                                                                        <Field
+                                                                            name={`products.${index}.price`}
+                                                                            style={{ width: 100 }}
+                                                                            component={CurrencyTextField}
+                                                                            currencySymbol="€"
+                                                                            decimalCharacter=","
+                                                                            digitGroupSeparator="."
+                                                                            placeholder="Enter price"
+                                                                            min="0.00"
+                                                                            max="9999999.99"
+                                                                            onKeyUp={e => {
+                                                                                handleChange(e);
+                                                                                product.total = product.quantity
+                                                                                    ? e.target.value * product.quantity
+                                                                                    : 0;
+                                                                                finalTotalHandler(values)
+                                                                                products[index].total = e.target.value
+                                                                            }}
+                                                                        />
+
+                                                                    </TableWithNoBorderCell>
+                                                                    <TableWithNoBorderCell align="right">
+                                                                        <Field name={`products.${index}.tax`} component={Select} placeholder="21% BTW">
+                                                                            <option value="0.00" label="0% btw" />
+                                                                            <option value="0.21" label="21 % btw" />
+                                                                            <option value="0.09" label="9% btw" />
+                                                                        </Field>
+                                                                    </TableWithNoBorderCell>
+                                                                    <TableWithNoBorderCell align="right" className="font-weight-bold align-middle text-right text-nowrap"><Field
+                                                                        name={`products.${index}.total`}
+                                                                        style={{ width: 100 }}
+                                                                        component={CurrencyTextField}
+                                                                        currencySymbol="€"
+                                                                        decimalCharacter=","
+                                                                        digitGroupSeparator="."
+                                                                        placeholder=""
+                                                                        disabled={true}
+                                                                    /></TableWithNoBorderCell>
+
+                                                                    <TableWithNoBorderCell>
+                                                                        <Tooltip title="Delete">
+                                                                            <IconButton aria-label="delete" className="secondary" onClick={() => remove(index)}>
+                                                                                <DeleteIcon size="1.25em" />
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                    </TableWithNoBorderCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        <TableRow>
+                                                            <TableWithNoBorderCell colSpan={6}>
+
+                                                                <Tooltip title="Add" aria-label="add">
+                                                                    <Fab color="primary" className={classes.fab} onClick={() => {
+                                                                        let product = { name: "", quantity: 1, price: "" }
+                                                                        push(product)
+                                                                        addProduct(product)
+                                                                    }}>
+                                                                        <AddIcon />
+                                                                    </Fab>
+                                                                </Tooltip>
+                                                            </TableWithNoBorderCell>
+                                                        </TableRow>
+                                                    </Fragment>
+                                                )}
+                                            </FieldArray>
+
+                                            <TableRow>
+                                                <TableCell rowSpan={3} colSpan={2} />
+                                                <TableCell colSpan={2}>Subtotal</TableCell>
+                                                <TableCell align="right">{ccyFormat(invoiceSubtotal)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>Tax</TableCell>
+                                                <TableCell align="right">{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
+                                                <TableCell align="right">{ccyFormat(invoiceTaxes)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell colSpan={2}>Total</TableCell>
+                                                <TableCell align="right">{ccyFormat(finalAmount)}</TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Grid>
+
+                            <Grid item justify='flex-end'>
+                                <Typography variant="p" component="p">Wij verzoeken u vriendelijk om het openstaand bedrag van {finalAmount} voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder vermelding van het factuurnummer {invoice_data.invoice_number} ’. Voor vragen kunt u contact opnemen per e-mail of telefoon.</Typography>
+                            </Grid>
+                            <Grid item>
+                                <Divider light />
                             </Grid>
                         </Grid>
 
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Omschrijving</th>
-                                    <th>Aantal</th>
-                                    <th>Tarief</th>
-                                    <th>BTW</th>
-                                    <th className="text-right">Totaal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <FieldArray name="products">
-                                    {({ insert, remove, push }) => (
-                                        <Fragment>
-                                            {values.products.length > 0 &&
-                                                values.products.map((product, index) => (
-                                                    <tr key={index}>
-                                                        <td>
-                                                            <Field
-                                                                type="text"
-                                                                name={`products.${index}.name`}
-                                                                placeholder="Ex: Pursuit Running Shoes"
-                                                                component={TextField}
-                                                                onKeyUp={e => {
-                                                                    handleChange(e);
-                                                                    products[index].name = e.target.value
-                                                                }}
-                                                            />
-                                                        </td>
-                                                        <td>
-                                                            <Field
-                                                                type="number"
-                                                                name={`products.${index}.quantity`}
-                                                                placeholder="Enter quantity"
-                                                                component={TextField}
-                                                                // InputProps={{ notched: true }}
-                                                                onKeyUp={e => {
-                                                                    handleChange(e);
-                                                                    product.total = product.price
-                                                                        ? e.target.value * product.price
-                                                                        : 0;
-
-                                                                    finalTotalHandler(values)
-                                                                }}
-                                                                min="1" max="999"
-                                                            />
-                                                        </td>
-                                                        <td><Field
-                                                            name={`products.${index}.price`}
-                                                            component={TextField}
-                                                            placeholder="Enter price"
-                                                            type="number"
-                                                            min="0.00"
-                                                            max="9999999.99"
-                                                            onKeyUp={e => {
-                                                                handleChange(e);
-                                                                product.total = product.quantity
-                                                                    ? e.target.value * product.quantity
-                                                                    : 0;
-                                                                finalTotalHandler(values)
-                                                                products[index].total = e.target.value
-                                                            }}
-                                                        />
-
-                                                        </td>
-                                                        {/* <td>
-                                                        <Field name={`products.${index}.tax`} component={Select} placeholder="21% BTW">
-                                                            <option value="0.00" label="0% btw" />
-                                                            <option value="0.21" label="21 % btw" />
-                                                            <option value="0.09" label="9% btw" />
-                                                        </Field>
-                                                    </td> */}
-                                                        <td className="font-weight-bold align-middle text-right text-nowrap"><Field
-                                                            name={`products.${index}.total`}
-                                                            component={TextField}
-                                                            placeholder=""
-                                                            disabled={true}
-                                                            type="number"
-                                                            min="0.00"
-                                                            max="9999999.99"
-                                                        /></td>
-                                                        <td>
-                                                            <IconButton aria-label="delete" className="secondary" onClick={() => remove(index)}>
-                                                                <DeleteIcon size="1.25em" />
-                                                            </IconButton>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            <tr>
-                                                <td colSpan={5}>
-                                                    <Button
-                                                        variant="contained"
-                                                        color="secondary"
-                                                        onClick={() => {
-                                                            let product = { name: "", quantity: 1, price: "" }
-                                                            push(product)
-                                                            addProduct(product)
-                                                        }}
-                                                    >Add Product</Button>
-
-                                                </td>
-                                            </tr>
-                                        </Fragment>
-                                    )}
-
-                                </FieldArray>
-
-                                <tr>
-                                    <td colSpan={5} className="text-right border-0 pt-4"><h5>Totaal te betalen: $ {finalAmount}</h5></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <Typography variant="p" component="p">Wij verzoeken u vriendelijk om het openstaand bedrag van {finalAmount} voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder vermelding van het factuurnummer {invoice_data.invoice_number} ’. Voor vragen kunt u contact opnemen per e-mail of telefoon.</Typography>
-
-                        <Divider light />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="button"
-                            disabled={isDataRequired}
-                            onClick={submitForm}
-                        >Submit</Button>
-                        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                            <Alert onClose={handleClose} severity="error">{errorMessage}</Alert>
-                        </Snackbar>
+                        <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                type="button"
+                                disabled={isDataRequired}
+                                onClick={submitForm}
+                            >Save invoice</Button>
+                            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                <Alert onClose={handleClose} severity="error">{errorMessage}</Alert>
+                            </Snackbar>
+                        </Grid>
                         {isSubmitting && <LinearProgress />}
                     </Form>
                 )}

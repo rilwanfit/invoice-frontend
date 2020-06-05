@@ -29,11 +29,12 @@ import { ApplicationContext } from './ApplicationContext'
 
 import Header from '../components/Header'
 
-const drawerWidth = 240;
+const drawerWidth = 340;
 
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
+        color: '#263238'
     },
     drawer: {
         [theme.breakpoints.up('sm')]: {
@@ -108,7 +109,7 @@ function ResponsiveDrawer(props) {
                 <Link href="/dashboard" passHref>
                     <ListItem button selected={router.pathname === "/dashboard"}>
                         <ListItemIcon>
-                            <DashboardIcon color="primary" />
+                            <DashboardIcon color="secondary" />
                         </ListItemIcon>
                         <ListItemText primary="Dashboard" className={classes} />
                     </ListItem>

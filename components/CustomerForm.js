@@ -43,15 +43,7 @@ export const validateSchema = Yup.object().shape({
     email: Yup.string()
         .email("Invalid email address format")
         .required("Email is required"),
-    products: Yup.array()
-        .of(
-            Yup.object().shape({
-                name: Yup.string().required("Name is required"),
-                quantity: Yup.number().required("required")
-            })
-        )
-        .min(1, "Need at least a product"),
-    postal: Yup.string()
+    postCode: Yup.string()
         .min(6, 'Voer een geldige postcode in')
         .max(6, 'Voer een geldige postcode in')
         .required("Voer je postcode in"),
@@ -71,7 +63,7 @@ const CustomerForm = (props) => {
     const classes = useStyles();
     return (
         <Formik
-            initialValues={{ name: "", street_name: "", email: "", postal: "", city: "" }}
+            initialValues={{ name: "", street_name: "", email: "", postCode: "", city: "" }}
             validationSchema={validateSchema}
             onSubmit={(values, { setSubmitting, setFieldError }) => {
                 // axios
@@ -118,7 +110,7 @@ const CustomerForm = (props) => {
                                 />
                             </Grid>
                         </Grid>
-                        <Divider light />
+                        
                         <Button
                             variant="contained"
                             color="primary"
@@ -127,7 +119,7 @@ const CustomerForm = (props) => {
                         >Submit</Button>
                         
                         {isSubmitting && <LinearProgress />} */}
-                    <Grid container spacing={3}>
+                    <Grid container spacing={1}>
                         <Grid item xs={12}>
                             <Field
                                 type="text"
@@ -211,7 +203,11 @@ const CustomerForm = (props) => {
                                 autoComplete="country"
                             />
                         </Grid>
-                        
+
+                        <Grid item xs={12}>
+                            <Divider light />
+                        </Grid>
+
                         <Grid item xs={12}>
                             <FormControlLabel
                                 control={<Checkbox color="secondary" name="saveAddress" value="yes" />}

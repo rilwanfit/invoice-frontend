@@ -20,6 +20,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.54",
     "@material-ui/pickers": "^3.2.10",
+    "@unicef/material-ui-currency-textfield": "^0.8.6",
     "angular-material-datepicker": "^1.0.2",
     "axios": "^0.19.2",
     "babel-plugin-styled-components": "^1.10.7",
@@ -36,6 +37,7 @@
     "react": "^16.13.1",
     "react-cookie": "^4.0.3",
     "react-dom": "^16.13.1",
+    "react-number-format": "^4.4.1",
     "styled-components": "^5.1.0",
     "typeface-roboto": "0.0.75",
     "yup": "^0.28.5"

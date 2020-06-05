@@ -113,7 +113,7 @@ const RegisterForm = () => {
               .then(response => {
                 Router.push('/registration-success')
               }).catch(error => {
-                if (error.response.data['hydra:description']) {
+                if (error.response !== undefined && error.response.data['hydra:description']) {
                   setFieldError('general', error.response.data['hydra:description'])
                 } else {
                   setFieldError('general', 'Unknown error');
