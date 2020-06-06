@@ -96,7 +96,6 @@ const useStyles = makeStyles((theme) => ({
     },
     mediaQuery: theme.breakpoints.down('sm'),
     table: {
-        minWidth: 700,
     },
     textSecondary: {
         color: theme.textSecondary
@@ -252,7 +251,7 @@ const InvoiceForm = (props) => {
                         BTW-nummer: {company.vat_number}<br />
                         IBAN: {company.iban}<br />
                             </Grid>
-                            <Grid item spacing={3}>
+                            <Grid item spacing={3} style={{ padding: '40px' }}>
                                 <TableContainer component={Paper}>
                                     <Table className={classes.table} aria-label="spanning table">
                                         <TableHead>
@@ -397,7 +396,7 @@ const InvoiceForm = (props) => {
                                 </TableContainer>
                             </Grid>
 
-                            <Grid item justify='flex-end'>
+                            <Grid item spacing={3} style={{ padding: '40px' }}>
                                 <Typography variant="p" component="p">Wij verzoeken u vriendelijk om het openstaand bedrag van {finalAmount} voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder vermelding van het factuurnummer {invoice_data.invoice_number} ’. Voor vragen kunt u contact opnemen per e-mail of telefoon.</Typography>
                             </Grid>
                             <Grid item>
@@ -405,7 +404,9 @@ const InvoiceForm = (props) => {
                             </Grid>
                         </Grid>
 
-                        <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+                        <Grid container direction="row"
+                            justify="center"
+                            alignItems="center">
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -413,16 +414,17 @@ const InvoiceForm = (props) => {
                                 disabled={isDataRequired}
                                 onClick={submitForm}
                             >Save invoice</Button>
-                            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                                <Alert onClose={handleClose} severity="error">{errorMessage}</Alert>
-                            </Snackbar>
+                    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="error">{errorMessage}</Alert>
+                    </Snackbar>
                         </Grid>
-                        {isSubmitting && <LinearProgress />}
+            {isSubmitting && <LinearProgress />}
                     </Form>
-                )}
+    )
+}
 
-            </Formik>
-        </MuiPickersUtilsProvider>
+            </Formik >
+        </MuiPickersUtilsProvider >
     )
 }
 
