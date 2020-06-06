@@ -8,7 +8,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import Router from 'next/router'
 import { ApplicationContext } from '../components/ApplicationContext'
-import CompanyInfoForm from '../components/CompanyInfoForm'
+import CompanyForm from '../components/Form/CompanyForm'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -50,7 +50,7 @@ export default function CompanyInfo() {
         <Grid container>
             <Grid item xs={12} m="auto" className={classes.alignItemsAndJustifyContent}>
                 <Paper className={classes.paper}>
-                    <CompanyInfoForm handleClick={handleClick} />
+                    <CompanyForm handleClick={handleClick} />
                 </Paper>
                 <Snackbar
                     anchorOrigin={{

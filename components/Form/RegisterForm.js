@@ -21,7 +21,7 @@ import { Cookies } from 'react-cookie';
 import axios from 'axios';
 import Router from 'next/router'
 
-import { ApplicationContext } from './ApplicationContext'
+import { ApplicationContext } from '../ApplicationContext'
 
 const cookies = new Cookies();
 
@@ -113,7 +113,7 @@ const RegisterForm = () => {
               .then(response => {
                 Router.push('/registration-success')
               }).catch(error => {
-                if (error.response.data['hydra:description']) {
+                if (error.response !== undefined && error.response.data['hydra:description']) {
                   setFieldError('general', error.response.data['hydra:description'])
                 } else {
                   setFieldError('general', 'Unknown error');

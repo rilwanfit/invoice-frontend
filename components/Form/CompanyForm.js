@@ -8,13 +8,14 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Grid from '@material-ui/core/Grid';
 
 import * as Yup from 'yup';
 import { Cookies } from 'react-cookie';
 import axios from 'axios';
 import Router from 'next/router'
 
-import { ApplicationContext } from './ApplicationContext'
+import { ApplicationContext } from '../ApplicationContext'
 
 const cookies = new Cookies();
 
@@ -32,7 +33,7 @@ function Copyright() {
 }
 
 const vSchema = Yup.object().shape({
-    company_name: Yup.string()
+    company: Yup.string()
         .required("Bedrijfsnaam mag niet leeg zijn"),
     street_name: Yup.string()
         .required("Straat mag niet leeg zijn"),
@@ -74,9 +75,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const companyDetails = { company_id: "", company_name: "", street_name: "", kvk_number: "", vat_number: "", bank_accont_number: "", email: "", phone: "" }
+const companyDetails = { company_id: "", company: "", street_name: "", kvk_number: "", vat_number: "", bank_accont_number: "", email: "", phone: "" }
 
-const CompanyInfoForm = (props) => {
+const CompanyForm = (props) => {
 
     const classes = useStyles();
     const {
@@ -100,7 +101,7 @@ const CompanyInfoForm = (props) => {
 
                 const results = response.data.company
                 companyDetails.company_id = results.id
-                companyDetails.company_name = results.name
+                companyDetails.company = results.name
                 companyDetails.street_name = results.address
                 companyDetails.kvk_number = results.kvkNumber
                 companyDetails.vat_number = results.vatNumber
@@ -156,10 +157,10 @@ const CompanyInfoForm = (props) => {
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="company_name"
+                                id="company"
                                 label="Bedrijfsnaam"
-                                name="company_name"
-                                autoComplete="company_name"
+                                name="company"
+                                autoComplete="company"
                                 component={TextField}
                             />
 
@@ -174,6 +175,39 @@ const CompanyInfoForm = (props) => {
                                 autoComplete="street_name"
                                 component={TextField}
                             />
+                            <Grid item xs={12} sm={6}>
+                            <Field
+                                type="text"
+                                name='postCode'
+                                label="Post code"
+                                placeholder='name'
+                                component={TextField}
+                                fullWidth
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Field
+                                type="text"
+                                name='city'
+                                label="Plaat"
+                                placeholder='name'
+                                component={TextField}
+                                fullWidth
+                                autoComplete="lastName"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Field
+                                type="text"
+                                name='country'
+                                label="country"
+                                placeholder='name'
+                                component={TextField}
+                                fullWidth
+                                fullWidth
+                                autoComplete="country"
+                            />
+                        </Grid>
 
                             <Field
                                 variant="outlined"
@@ -257,4 +291,4 @@ const CompanyInfoForm = (props) => {
     );
 }
 
-export default CompanyInfoForm;
+export default CompanyForm;

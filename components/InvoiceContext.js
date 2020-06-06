@@ -6,25 +6,28 @@ import Router from 'next/dist/next-server/server/router';
 
 export const InvoiceContext = createContext();
 
+const currentDate = new Date();
 const invoiceNumber = (new Date().getFullYear()) + '-' + '0000'
 
 const initialState = {
     company: {
-        name: "Cocon Administratie & Advies",
-        street_name: "Euclideslaan 60",
-        postal_address: "3556 Utrecht, The Netherland",
-        phone_number: "+555 7 789-1234",
+        name: "",
+        address: "",
+        postCode: '',
+        city: '',
+        phone_number: "",
         email: "info@administratie.nl",
-        website: "www.coconadministratie.nl",
         kvk_number: 'KVK123',
         vat_number: '1234',
         provided: false
     },
     customer: {
-        name: 'Casey Williams',
-        street_name: '57 Parkway, 5th Floor',
-        postal_address: 'New York, NY 10013',
-        email: 'casey@test.com'
+        company: '',
+        name: '',
+        address: '',
+        postCode: '',
+        city: '',
+        country: '',
     },
     products: [
         {
@@ -35,8 +38,8 @@ const initialState = {
     ],
     invoice_data: {
         invoice_number: invoiceNumber,
-        created_date: '14th June, 2020',
-        due_date: '14th June, 2021',
+        created_date: currentDate.getDate() + "-" + currentDate.getMonth() + "-" + currentDate.getFullYear(),
+        due_date: (currentDate.getDate() + 14) + "-" + currentDate.getMonth() + "-" + currentDate.getFullYear(),
         notes: 'Wij verzoeken u vriendelijk om het openstaand bedrag van' + +' voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder vermelding van het factuurnummer ‘xxxxx (retrieve from #factuurnummer)’. Voor vragen kunt u contact opnemen per e-mail of telefoon.'
     }
 }
@@ -52,6 +55,11 @@ const invoiceReducer = (state, action) => {
             return {
                 ...state,
                 company: action.payload,
+            }
+        case "UPDATE_CUSTOMER":
+            return {
+                ...state,
+                customer: action.payload,
             }
         case "LOADING":
             return {
@@ -96,6 +104,13 @@ export const InvoiceProvider = (props) => {
         })
     }
 
+    const updateCustomer = customer => {
+        dispatch({
+            type: "UPDATE_CUSTOMER",
+            payload: customer
+        })
+    }
+
     const providerValue = {
         company,
         customer,
@@ -103,6 +118,7 @@ export const InvoiceProvider = (props) => {
         addProduct,
         invoice_data,
         updateCompany,
+        updateCustomer,
         authenticated,
         userid,
         token
