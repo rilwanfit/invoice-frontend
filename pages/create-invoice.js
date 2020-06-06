@@ -43,7 +43,7 @@ export default function createInvoice() {
                         <Typography variant="h6" color="textPrimary" style={{fontSize: '1.5rem'}}>Factuur toevoegen</Typography>
                     </Grid>
                     <Grid item>
-                        <Paper style={{ display: 'inline-block', width: '80%' }} justify="center" direction="column" >
+                        <Paper style={{ display: 'inline-block', width: '70%' }} justify="center" direction="column" >
                             <Grid container spacing={6} >
                                 <Grid item xs={12} sm={6} md={12} >
                                     <Card className={classes.root} elevation={0}>

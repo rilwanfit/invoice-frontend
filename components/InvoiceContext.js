@@ -6,22 +6,24 @@ import Router from 'next/dist/next-server/server/router';
 
 export const InvoiceContext = createContext();
 
+const currentDate = new Date();
 const invoiceNumber = (new Date().getFullYear()) + '-' + '0000'
 
 const initialState = {
     company: {
-        name: "Cocon Administratie & Advies",
-        street_name: "Euclideslaan 60",
-        postal_address: "3556 Utrecht, The Netherland",
-        phone_number: "+555 7 789-1234",
+        name: "",
+        address: "",
+        postCode: '',
+        city: '',
+        phone_number: "",
         email: "info@administratie.nl",
-        website: "www.coconadministratie.nl",
         kvk_number: 'KVK123',
         vat_number: '1234',
         provided: false
     },
     customer: {
         company: '',
+        name: '',
         address: '',
         postCode: '',
         city: '',
@@ -36,8 +38,8 @@ const initialState = {
     ],
     invoice_data: {
         invoice_number: invoiceNumber,
-        created_date: '14th June, 2020',
-        due_date: '14th June, 2021',
+        created_date: currentDate.getDate() + "-" + currentDate.getMonth() + "-" + currentDate.getFullYear(),
+        due_date: (currentDate.getDate() + 14) + "-" + currentDate.getMonth() + "-" + currentDate.getFullYear(),
         notes: 'Wij verzoeken u vriendelijk om het openstaand bedrag van' + +' voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder vermelding van het factuurnummer ‘xxxxx (retrieve from #factuurnummer)’. Voor vragen kunt u contact opnemen per e-mail of telefoon.'
     }
 }

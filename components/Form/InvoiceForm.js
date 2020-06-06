@@ -16,6 +16,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import MuiAlert from '@material-ui/lab/Alert';
+import { red } from '@material-ui/core/colors';
 import Fab from '@material-ui/core/Fab';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -223,45 +224,51 @@ const InvoiceForm = (props) => {
                 {({ values, errors, touched, submitForm, isSubmitting, handleChange, setFieldValue }) => (
                     <Form>
                         <Grid container spacing={6} justify="space-between">
-                            <Grid item md={6} style={{ padding: '80px' }}>
+                            <Grid item md={6} style={{ paddingLeft: '80px', paddingTop: '180px' }}>
                                 <CustomerSearchField updateCustomer={updateCustomer} token={token} />
                                 <Grid container spacing={3} justify="space-around">
                                     <Grid item md={12} style={{ paddingTop: '40px' }} >
                                         {customer.company.length > 0 ? customer.company : 'Naam ontvanger'}<br />
+                                        T.a.v. {customer.name.length > 0 ? customer.name : ' Naam'}<br />
                                         {customer.address.length > 0 ? customer.address : 'Adres 123'}<br />
                                         {customer.postCode.length > 0 ? customer.postCode : '0000AA'} {customer.city.length > 0 ? customer.city : 'Plaats'}
-                                    </Grid>
-                                    <Grid item md={12} style={{ paddingTop: '120px' }}>
-                                        <b>Factuurnummer:</b> {invoice_data.invoice_number} <br />
-                                        <b>Factuurdatum:</b> {'10th June, 2021'}<br />
-                                        <b>Vervaldatum:</b> {'14th June, 2021'}
                                     </Grid>
                                 </Grid>
                             </Grid>
                             <Grid item md={6} style={{ padding: '80px' }} >
                                 <img className="logo img-fluid mb-3" src="https://docamatic.s3-eu-west-1.amazonaws.com/assets/360_logo.png" style={{ maxHeight: '100px' }} />
                                 <br />
-                                <h2 className="mb-1">{company.name}</h2>
-                                {company.address}<br />
-                                {company.website}  / {company.phone_number}<br />
-                                <strong>{company.email}</strong>
+                                <h4 className="mb-1">{company.name.length > 0 ? company.name : 'Cocon Administratie & Advies'}</h4>
+                                {company.address.length > 0 ? company.address : 'Adres 123'}<br />
+                                {company.postCode.length > 0 ? company.postCode : '0000AA'} {company.city.length > 0 ? company.city : 'Plaats'}<br />
+                                {company.email.length > 0 ? company.email : 'info@administratie.nl'}<br />
+                                {company.phone_number.length > 0 ? company.phone_number : '+555 7 789-1234'}
                                 <br />
                                 <br />
                         KVK-nummer: {company.kvk_number}<br />
                         BTW-nummer: {company.vat_number}<br />
                         IBAN: {company.iban}<br />
                             </Grid>
-                            <Grid item spacing={3} style={{ padding: '40px' }}>
+
+                            <Grid item md={6} style={{ paddingLeft: '60px', fontSize: '1.6em' }}>
+                                <b>Factuurnummer:</b> {invoice_data.invoice_number} <br />
+                            </Grid>
+                            <Grid item md={6} style={{ paddingLeft: '80px' }} >
+                                <b>Factuurdatum:</b> {invoice_data.created_date}<br />
+                                <b>Vervaldatum:</b> {invoice_data.due_date}
+                            </Grid>
+
+                            <Grid item spacing={3} style={{ paddingLeft: '40px' }}>
                                 <TableContainer component={Paper}>
                                     <Table className={classes.table} aria-label="spanning table">
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell style={{ width: '30rem' }}>Omschrijving</TableCell>
-                                                <TableCell align="right">Aantal.</TableCell>
-                                                <TableCell align="right">Tarief</TableCell>
-                                                <TableCell align="right">Btw</TableCell>
-                                                <TableCell align="right">Totaal</TableCell>
-                                                <TableCell align="right">Actie</TableCell>
+                                                <TableWithNoBorderCell style={{ width: '30rem' }}>Omschrijving</TableWithNoBorderCell>
+                                                <TableWithNoBorderCell align="right">Aantal.</TableWithNoBorderCell>
+                                                <TableWithNoBorderCell align="right">Tarief</TableWithNoBorderCell>
+                                                <TableWithNoBorderCell align="right">Btw</TableWithNoBorderCell>
+                                                <TableWithNoBorderCell align="right">Totaal</TableWithNoBorderCell>
+                                                <TableWithNoBorderCell align="right">Actie</TableWithNoBorderCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -353,7 +360,7 @@ const InvoiceForm = (props) => {
                                                                     <TableWithNoBorderCell>
                                                                         <Tooltip title="Delete">
                                                                             <IconButton aria-label="delete" className="secondary" onClick={() => remove(index)}>
-                                                                                <DeleteIcon size="1.25em" />
+                                                                                <DeleteIcon size="1.1em" style={{ color: red[500] }} />
                                                                             </IconButton>
                                                                         </Tooltip>
                                                                     </TableWithNoBorderCell>
@@ -361,16 +368,17 @@ const InvoiceForm = (props) => {
                                                             ))}
                                                         <TableRow>
                                                             <TableWithNoBorderCell colSpan={6}>
-
-                                                                <Tooltip title="Add" aria-label="add">
-                                                                    <Fab color="primary" className={classes.fab} onClick={() => {
+                                                                <Button
+                                                                    variant="contained"
+                                                                    color="primary"
+                                                                    type="button"
+                                                                    disabled={isDataRequired}
+                                                                    onClick={() => {
                                                                         let product = { name: "", quantity: 1, price: "" }
                                                                         push(product)
                                                                         addProduct(product)
-                                                                    }}>
-                                                                        <AddIcon />
-                                                                    </Fab>
-                                                                </Tooltip>
+                                                                    }}
+                                                                >regel toevoegen</Button>
                                                             </TableWithNoBorderCell>
                                                         </TableRow>
                                                     </Fragment>
@@ -396,8 +404,9 @@ const InvoiceForm = (props) => {
                                 </TableContainer>
                             </Grid>
 
-                            <Grid item spacing={3} style={{ padding: '40px' }}>
-                                <Typography variant="p" component="p">Wij verzoeken u vriendelijk om het openstaand bedrag van {finalAmount} voor xx-xx-xxxx (retrieve from vervaldatum) over te maken op onze rekeningnummer onder vermelding van het factuurnummer {invoice_data.invoice_number} ’. Voor vragen kunt u contact opnemen per e-mail of telefoon.</Typography>
+                            <Grid item spacing={3} style={{ paddingLeft: '40px' }}>
+                                <Divider light />
+                                <Typography variant="p" component="p">Wij verzoeken u vriendelijk om het openstaand bedrag van {finalAmount} voor {invoice_data.due_date} over te maken op onze rekeningnummer onder vermelding van het factuurnummer {invoice_data.invoice_number} ’. Voor vragen kunt u contact opnemen per e-mail of telefoon.</Typography>
                             </Grid>
                             <Grid item>
                                 <Divider light />
@@ -414,14 +423,14 @@ const InvoiceForm = (props) => {
                                 disabled={isDataRequired}
                                 onClick={submitForm}
                             >Save invoice</Button>
-                    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                        <Alert onClose={handleClose} severity="error">{errorMessage}</Alert>
-                    </Snackbar>
+                            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                <Alert onClose={handleClose} severity="error">{errorMessage}</Alert>
+                            </Snackbar>
                         </Grid>
-            {isSubmitting && <LinearProgress />}
+                        {isSubmitting && <LinearProgress />}
                     </Form>
-    )
-}
+                )
+                }
 
             </Formik >
         </MuiPickersUtilsProvider >
