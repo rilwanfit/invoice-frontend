@@ -33,7 +33,7 @@ function Copyright() {
 }
 
 const vSchema = Yup.object().shape({
-    company_name: Yup.string()
+    company: Yup.string()
         .required("Bedrijfsnaam mag niet leeg zijn"),
     street_name: Yup.string()
         .required("Straat mag niet leeg zijn"),
@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const companyDetails = { company_id: "", company_name: "", street_name: "", kvk_number: "", vat_number: "", bank_accont_number: "", email: "", phone: "" }
+const companyDetails = { company_id: "", company: "", street_name: "", kvk_number: "", vat_number: "", bank_accont_number: "", email: "", phone: "" }
 
 const CompanyForm = (props) => {
 
@@ -101,7 +101,7 @@ const CompanyForm = (props) => {
 
                 const results = response.data.company
                 companyDetails.company_id = results.id
-                companyDetails.company_name = results.name
+                companyDetails.company = results.name
                 companyDetails.street_name = results.address
                 companyDetails.kvk_number = results.kvkNumber
                 companyDetails.vat_number = results.vatNumber
@@ -157,10 +157,10 @@ const CompanyForm = (props) => {
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="company_name"
+                                id="company"
                                 label="Bedrijfsnaam"
-                                name="company_name"
-                                autoComplete="company_name"
+                                name="company"
+                                autoComplete="company"
                                 component={TextField}
                             />
 
@@ -183,7 +183,6 @@ const CompanyForm = (props) => {
                                 placeholder='name'
                                 component={TextField}
                                 fullWidth
-                                autoComplete="firstName"
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>

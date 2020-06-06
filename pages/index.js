@@ -2,7 +2,7 @@ import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles';
 
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../components/Form/LoginForm';
 
 const useStyles = makeStyles((theme) => ({
     paper: {

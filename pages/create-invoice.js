@@ -39,12 +39,12 @@ export default function createInvoice() {
         <div className={classes.root}>
             <InvoiceProvider>
                 <Grid container spacing={3}>
-                    <Grid item>
-                        <Typography variant="h6" color="textSecondary">Create a new Invoice</Typography>
+                    <Grid item style={{margin: '-20px 0 20px 0'}}>
+                        <Typography variant="h6" color="textPrimary" style={{fontSize: '1.5rem'}}>Factuur toevoegen</Typography>
                     </Grid>
                     <Grid item>
-                        <Paper style={{ display: 'inline-block', width: '100%' }} justify="center" direction="column" >
-                            <Grid container spacing={4} >
+                        <Paper style={{ display: 'inline-block', width: '80%' }} justify="center" direction="column" >
+                            <Grid container spacing={6} >
                                 <Grid item xs={12} sm={6} md={12} >
                                     <Card className={classes.root} elevation={0}>
                                         <CardContent>

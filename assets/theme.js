@@ -16,6 +16,9 @@ const theme = createMuiTheme({
     background: {
       default: '#fff',
     },
+    textSecondary: {
+      default: '#fbfbfb',
+    },
   },
 });
 

@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import axios from 'axios';
 import { Field } from "formik";
 import { TextField } from 'formik-material-ui';
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,38 +18,60 @@ const CustomerSearchField = (props) => {
     const classes = useStyles();
 
     const [open, setOpen] = React.useState(false);
-  
+    const [autoCompleteOptions, setAutoCompleteOptions] = React.useState([]);
+
     const handleClose = () => {
-      setOpen(false);
+        setOpen(false);
     };
 
-    // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-    const top100Films = [
-        {
-            name: 'Customer 1',
-            street_name: '57 Parkway, 5th Floor',
-            postal_address: 'New York, NY 10013',
-            email: 'casey@test.com'
-        },
-        {
-            name: 'Customer 2',
-            street_name: '58 tjsda, 7th Floor',
-            postal_address: 'Rotterdam, NY 10013',
-            email: 'test@test.com'
-        }
-    ];
+    useEffect(() => {
+        axios
+            .get(process.env.RESTURL + '/api/customers', {
+                headers: {
+                    Authorization: 'Bearer ' + props.token
+                }
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    const customers = response.data['hydra:member']
+
+                    const preparedOptions = [];
+
+                    customers.forEach((n, i) => {
+                        preparedOptions[i] = {
+                            company: n['companyName'],
+                            address: n['address'],
+                            postCode: n['postcode'],
+                            city: n['city'],
+                            country: n['country'],
+                        };
+                    });
+
+                    setAutoCompleteOptions(preparedOptions)
+                }
+
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+            });
+    }, []);
     return (
         <>
-            <CreateCustomerDialog handleClose={handleClose} open={open} />
+            <CreateCustomerDialog handleClose={handleClose} open={open} updateCustomer={props.updateCustomer} />
             <Autocomplete
                 clearOnBlur
-                options={top100Films}
+                options={autoCompleteOptions}
                 onChange={(event, customer) => {
-                    
-                    if (customer != null && customer.name.startsWith('+ Add')) {
+                    if (customer != null && customer.company.startsWith('+')) {
                         setOpen(true);
                     } else if (customer == null) {
-                        props.updateCustomer({})
+                        props.updateCustomer({
+                            company: '',
+                            address: '',
+                            postCode: '',
+                            city: '',
+                            country: '',
+                        })
                     } else {
                         props.updateCustomer(customer)
                     }
@@ -60,7 +83,7 @@ const CustomerSearchField = (props) => {
                     if (params.inputValue !== '') {
                         filtered.push({
                             inputValue: params.inputValue,
-                            name: `+ Add "${params.inputValue}"`,
+                            company: `+ Toevoegen "${params.inputValue}"`,
                         });
                     }
 
@@ -71,14 +94,14 @@ const CustomerSearchField = (props) => {
                     if (option.inputValue) {
                         return option.inputValue;
                     }
-                    return option.name
+                    return option.company
                 }
                 }
                 style={{ width: 300 }}
                 renderInput={(params) => (
                     <Field component={TextField} {...params} name="customer" label="Select customer" fullWidth />
                 )}
-                renderOption={(option) => option.name}
+                renderOption={(option) => option.company}
             />
         </>
     )

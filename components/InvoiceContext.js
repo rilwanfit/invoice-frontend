@@ -21,10 +21,11 @@ const initialState = {
         provided: false
     },
     customer: {
-        name: 'Casey Williams',
-        street_name: '57 Parkway, 5th Floor',
-        postal_address: 'New York, NY 10013',
-        email: 'casey@test.com'
+        company: '',
+        address: '',
+        postCode: '',
+        city: '',
+        country: '',
     },
     products: [
         {

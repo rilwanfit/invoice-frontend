@@ -97,6 +97,9 @@ const useStyles = makeStyles((theme) => ({
     mediaQuery: theme.breakpoints.down('sm'),
     table: {
         minWidth: 700,
+    },
+    textSecondary: {
+        color: theme.textSecondary
     }
 }));
 
@@ -191,10 +194,11 @@ const InvoiceForm = (props) => {
                         .post(process.env.RESTURL + '/api/invoices', {
                             invoiceNumber: invoice_data.invoice_number,
                             customer: {
-                                name: customer.name,
-                                street_name: customer.street_name,
-                                postal_address: customer.postal_address,
-                                email: customer.email
+                                name: customer.company,
+                                address: 'Adres 123',
+                                postCode: '0000 AA',
+                                city: 'Plaats',
+                                country: 'Land',
                             },
                             product: products,
                             notes: invoice_data.notes
@@ -220,23 +224,23 @@ const InvoiceForm = (props) => {
                 {({ values, errors, touched, submitForm, isSubmitting, handleChange, setFieldValue }) => (
                     <Form>
                         <Grid container spacing={6} justify="space-between">
-                            <Grid item md={6}>
-
-                                <CustomerSearchField updateCustomer={updateCustomer} />
-                                
-                                <h4 className="mb-0">{customer.name}</h4>
-                                {customer.street_name}<br />
-                                {customer.postal_address}<br />
-                                {customer.email}<br />
-                                <br />
-                                <br />
-            Factuurnummer: {invoice_data.invoice_number} <br />
-            Factuurdatum: {'10th June, 2021'}<br />
-            Vervaldatum: {'14th June, 2021'}<br />
-                                {/* Vervaldatum: {invoice_data.due_date}<br /> */}
+                            <Grid item md={6} style={{ padding: '80px' }}>
+                                <CustomerSearchField updateCustomer={updateCustomer} token={token} />
+                                <Grid container spacing={3} justify="space-around">
+                                    <Grid item md={12} style={{ paddingTop: '40px' }} >
+                                        {customer.company.length > 0 ? customer.company : 'Naam ontvanger'}<br />
+                                        {customer.address.length > 0 ? customer.address : 'Adres 123'}<br />
+                                        {customer.postCode.length > 0 ? customer.postCode : '0000AA'} {customer.city.length > 0 ? customer.city : 'Plaats'}
+                                    </Grid>
+                                    <Grid item md={12} style={{ paddingTop: '120px' }}>
+                                        <b>Factuurnummer:</b> {invoice_data.invoice_number} <br />
+                                        <b>Factuurdatum:</b> {'10th June, 2021'}<br />
+                                        <b>Vervaldatum:</b> {'14th June, 2021'}
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                            <Grid item md={6} >
-                                <img className="logo img-fluid mb-3" src="https://docamatic.s3-eu-west-1.amazonaws.com/assets/360_logo.png" style={{ maxHeight: '140px' }} />
+                            <Grid item md={6} style={{ padding: '80px' }} >
+                                <img className="logo img-fluid mb-3" src="https://docamatic.s3-eu-west-1.amazonaws.com/assets/360_logo.png" style={{ maxHeight: '100px' }} />
                                 <br />
                                 <h2 className="mb-1">{company.name}</h2>
                                 {company.address}<br />

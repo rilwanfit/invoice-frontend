@@ -7,38 +7,32 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import LinearProgress from "@material-ui/core/LinearProgress";
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import MuiAlert from '@material-ui/lab/Alert';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-
-import DateFnsUtils from '@date-io/date-fns';
 
 import { InvoiceContext } from '../InvoiceContext';
 
 import { Cookies } from 'react-cookie';
 const cookies = new Cookies();
 
-function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 export const validateSchema = Yup.object().shape({
-    name: Yup.string()
+    company: Yup.string()
+        .required("Bedrijfsnaam mag niet leeg zijn"),
+    firstName: Yup.string()
         .min(3, "name must be 3 characters at minimum")
-        .required("name is required"),
-    street_name: Yup.string()
-        .min(3, "street_name must be 3 characters at minimum")
-        .required("street_name is required"),
-    email: Yup.string()
-        .email("Invalid email address format")
-        .required("Email is required"),
+        .required("Voornaam is required"),
+    lastName: Yup.string()
+        .min(3, "name must be 3 characters at minimum")
+        .required("Achternaam is required"),
+    address: Yup.string()
+        .min(3, "address must be 3 characters at minimum")
+        .required("address is required"),
     postCode: Yup.string()
         .required("Voer je postcode in"),
     city: Yup.string()
-        .required('Voer uw volledige adres in')
-
+        .required('Voer uw volledige adres in'),
+    country: Yup.string()
+        .required('country required')
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -52,50 +46,56 @@ const CustomerForm = (props) => {
     const classes = useStyles();
     return (
         <Formik
-            initialValues={{ name: "", street_name: "", email: "", postCode: "", city: "" }}
+            initialValues={{ company: "", firstName: "", lastName: "", address: "", postCode: "", city: "", country: "" }}
             validationSchema={validateSchema}
             onSubmit={(values, { setSubmitting, setFieldError }) => {
-                // axios
-                //     .post(process.env.RESTURL + '/api/invoices', {
-                //         invoiceNumber: invoice_data.invoice_number,
-                //         customer: {
-                //             name: customer.name,
-                //             street_name: customer.street_name,
-                //             postal_address: customer.postal_address,
-                //             email: customer.email
-                //         },
-                //         product: products,
-                //         notes: invoice_data.notes
-                //     }, {
-                //         headers: {
-                //             Authorization: 'Bearer ' + cookies.get('token')
-                //         }
-                //     })
-                //     .then(response => {
-                //         console.log(response);
-                //     }).catch(error => {
-                //         if (error.response.data['hydra:description']) {
-                //             setErrorMessage(error.response.data['hydra:description'])
-                //             handleClick()
-                //         } else {
-                //             setErrorMessage('Unknown error')
-                //         }
-                //     }).finally(() => {
-                //         setSubmitting(false);
-                //     });
+                if (props.updateCustomer != undefined) {
+                    props.updateCustomer({
+                        company: values.company,
+                        address: values.address,
+                        postCode: values.postCode,
+                        city: values.city,
+                        country: values.country,
+                    })
+                }
+                axios
+                    .post(process.env.RESTURL + '/api/customers', {
+                        'companyName': values.company,
+                        'firstName': values.firstName,
+                        'lastName': values.lastName,
+                        'address': values.address,
+                        'postcode': values.postCode,
+                        'city': values.city,
+                        'country': values.country
+                    }, {
+                        headers: {
+                            Authorization: 'Bearer ' + cookies.get('token')
+                        }
+                    })
+                    .then(response => {
+                        console.log(response);
+                    }).catch(error => {
+                        console.error(error);
+                        // if (error.response.data['hydra:description']) {
+                        //     setErrorMessage(error.response.data['hydra:description'])
+                        //     handleClick()
+                        // } else {
+                        //     setErrorMessage('Unknown error')
+                        // }
+                    }).finally(() => {
+                        setSubmitting(false);
+                        props.handleClose()
+                    });
             }}
         >
-            {({ values, errors, touched, submitForm, handleChange, setFieldValue }) => (
+            {({ errors, submitForm, isSubmitting }) => (
                 <Form>
-                    {/* 
-                        {isSubmitting && <LinearProgress />} */}
                     <Grid container spacing={1}>
                         <Grid item xs={12}>
                             <Field
                                 type="text"
                                 name='company'
                                 label="Bedrijfsnaam"
-                                placeholder='name'
                                 component={TextField}
                                 fullWidth
                                 autoComplete="company"
@@ -147,7 +147,7 @@ const CustomerForm = (props) => {
                                 placeholder='name'
                                 component={TextField}
                                 fullWidth
-                                autoComplete="firstName"
+                                autoComplete="postCode"
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -176,14 +176,16 @@ const CustomerForm = (props) => {
 
                         <Grid item xs={12}>
                             <Divider light />
+                            {isSubmitting && <LinearProgress />}
                         </Grid>
 
                         <Grid item xs={12}>
                             <Button
                                 variant="contained"
                                 color="primary"
-                                type="button"
+                                type="submit"
                                 onClick={submitForm}
+                                disabled={isSubmitting}
                             >Add Customer</Button>
                         </Grid>
                     </Grid>
