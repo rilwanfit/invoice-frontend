@@ -32,7 +32,7 @@
     "formik-material-ui-pickers": "0.0.8",
     "material-table": "^1.59.0",
     "material-table-formik": "^0.1.10",
-    "next": "^9.4.1",
+    "next": "^11.1.0",
     "prop-types": "latest",
     "react": "^16.13.1",
     "react-cookie": "^4.0.3",
